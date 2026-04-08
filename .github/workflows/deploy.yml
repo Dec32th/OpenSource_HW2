@@ -43,7 +43,7 @@ jobs:
   deploy:
     name: Pull & Run on Local Machine
     # Mac self-hosted 환경 (macOS 기본 셸인 bash 사용)
-    runs-on: self-hosted
+    runs-on: [self-hosted, macOS]
 
     needs: []
     if: |

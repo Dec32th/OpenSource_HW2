@@ -1,0 +1,89 @@
+name: CI — Build & Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*.*.*'          # v1.0.0 형태 태그도 빌드
+  pull_request:
+    branches:
+      - main
+      - master            # PR은 build만, push 안 함
+
+env:
+  IMAGE_NAME: covid-variant-tracker   # Docker Hub 리포지토리 이름
+
+jobs:
+  build-and-push:
+    name: Build & Push to Docker Hub
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      # 1. 소스 체크아웃
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      # 2. Docker 메타데이터 자동 생성
+      #    - branch push  → latest + branch명
+      #    - tag push     → 버전 태그 (v1.2.3 → 1.2.3, 1.2, 1)
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
+
+      # 3. QEMU (멀티 플랫폼 빌드용: linux/amd64 + linux/arm64)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # 4. Buildx 설정
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 5. Docker Hub 로그인 (PR에서는 skip)
+      - name: Log in to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 6. 빌드 & Push
+      #    - PR: 빌드만 (push: false)
+      #    - main/tag: 빌드 + push
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # BuildKit 레이어 캐시 — GitHub Actions 캐시 백엔드 활용
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          # 이미지 빌드 메타데이터 기록
+          provenance: true
+          sbom: true
+
+      # 7. Docker Hub README 자동 업데이트 (optional: main 브랜치일 때)
+      - name: Update Docker Hub description
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
+          short-description: "코로나19 변이 계통 추적 및 시각화 시스템 (SARS-CoV-2 Variant Tracker)"
+          readme-filepath: ./README.md
+        continue-on-error: true   # README.md 없어도 워크플로우 실패 안 함

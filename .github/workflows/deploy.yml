@@ -53,7 +53,7 @@ jobs:
     steps:
       - name: Resolve image tag
         id: tag
-        shell: pwsh
+        shell: powershell
         run: |
           $eventName = "${{ github.event_name }}"
           if ($eventName -eq "workflow_dispatch") {
@@ -72,13 +72,13 @@ jobs:
           Write-Host "▶ 배포 이미지: $IMAGE"
 
       - name: Log in to Docker Hub
-        shell: pwsh
+        shell: powershell
         run: |
           "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
           Write-Host "✅ Docker Hub 로그인 완료"
 
       - name: Pull latest image
-        shell: pwsh
+        shell: powershell
         run: |
           $IMAGE = "${{ steps.tag.outputs.image }}"
           Write-Host "⬇ Pulling $IMAGE ..."
@@ -86,7 +86,7 @@ jobs:
           Write-Host "✅ Pull 완료"
 
       - name: Stop & remove existing container
-        shell: pwsh
+        shell: powershell
         run: |
           $NAME = "${{ env.CONTAINER_NAME }}"
           $exists = docker ps -a --format '{{.Names}}' | Select-String -Pattern "^$NAME$"
@@ -100,7 +100,7 @@ jobs:
           }
 
       - name: Start new container
-        shell: pwsh
+        shell: powershell
         run: |
           $IMAGE = "${{ steps.tag.outputs.image }}"
           $NAME = "${{ env.CONTAINER_NAME }}"
@@ -117,7 +117,7 @@ jobs:
           Write-Host "🌐 서비스 주소: http://localhost:${{ env.HOST_PORT }}"
 
       - name: Health check
-        shell: pwsh
+        shell: powershell
         run: |
           Write-Host "⏳ 헬스체크 대기 (최대 30초)..."
           $success = $false
@@ -147,12 +147,12 @@ jobs:
 
       - name: Prune dangling images
         if: always()
-        shell: pwsh
+        shell: powershell
         run: |
           docker image prune -f
           Write-Host "🧹 사용하지 않는 이미지 정리 완료"
 
       - name: Log out from Docker Hub
         if: always()
-        shell: pwsh
+        shell: powershell
         run: docker logout

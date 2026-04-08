@@ -1,0 +1,2822 @@
+[2026-04-08 10:34:13Z INFO HostContext] No proxy settings were found based on environmental variables (http_proxy/https_proxy/HTTP_PROXY/HTTPS_PROXY)
+[2026-04-08 10:34:13Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:13Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:13Z INFO HostContext] Well known config file 'Credentials': 'C:\HW2\actions-runner\.credentials'
+[2026-04-08 10:34:13Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:13Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:13Z INFO HostContext] Well known config file 'Runner': 'C:\HW2\actions-runner\.runner'
+[2026-04-08 10:34:13Z INFO Worker] Version: 2.333.1
+[2026-04-08 10:34:13Z INFO Worker] Commit: 6792966801e8925346735b68c03bf9f347af4646
+[2026-04-08 10:34:13Z INFO Worker] Culture: ko-KR
+[2026-04-08 10:34:13Z INFO Worker] UI Culture: ko-KR
+[2026-04-08 10:34:13Z INFO Worker] Waiting to receive the job message from the channel.
+[2026-04-08 10:34:13Z INFO ProcessChannel] Receiving message of length 39061, with hash '6ce6a658f7c9d173f097cc427e84d6843f1bc8db0ae6886ad2e85b7d465fade7'
+[2026-04-08 10:34:13Z INFO Worker] Message received.
+[2026-04-08 10:34:14Z INFO Worker] Job message:
+ {
+  "environmentVariables": [
+    {
+      "type": 2,
+      "file": 1,
+      "line": 25,
+      "col": 3,
+      "map": [
+        {
+          "key": {
+            "type": 0,
+            "file": 1,
+            "line": 25,
+            "col": 3,
+            "lit": "IMAGE_NAME"
+          },
+          "value": {
+            "type": 0,
+            "file": 1,
+            "line": 25,
+            "col": 20,
+            "lit": "covid-variant-tracker"
+          }
+        },
+        {
+          "key": {
+            "type": 0,
+            "file": 1,
+            "line": 26,
+            "col": 3,
+            "lit": "CONTAINER_NAME"
+          },
+          "value": {
+            "type": 0,
+            "file": 1,
+            "line": 26,
+            "col": 20,
+            "lit": "covid-variant-tracker"
+          }
+        },
+        {
+          "key": {
+            "type": 0,
+            "file": 1,
+            "line": 27,
+            "col": 3,
+            "lit": "HOST_PORT"
+          },
+          "value": {
+            "type": 0,
+            "file": 1,
+            "line": 27,
+            "col": 20,
+            "lit": "8000"
+          }
+        },
+        {
+          "key": {
+            "type": 0,
+            "file": 1,
+            "line": 28,
+            "col": 3,
+            "lit": "CONTAINER_PORT"
+          },
+          "value": {
+            "type": 0,
+            "file": 1,
+            "line": 28,
+            "col": 20,
+            "lit": "8000"
+          }
+        }
+      ]
+    }
+  ],
+  "fileTable": [
+    ".github/workflows/deploy.yml"
+  ],
+  "mask": [
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    }
+  ],
+  "steps": [
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 54,
+        "col": 15,
+        "lit": "Resolve image tag"
+      },
+      "contextName": "tag",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 3,
+              "file": 1,
+              "line": 57,
+              "col": 14,
+              "expr": "format('$eventName = \"{0}\"\nif ($eventName -eq \"workflow_dispatch\") {{\n  $TAG = \"{1}\"\n}} else {{\n  $REF = \"{2}\"\n  if ($REF -eq \"main\" -or $REF -eq \"master\") {{\n    $TAG = \"latest\"\n  }} else {{\n    $TAG = $REF\n  }}\n}}\n$IMAGE = \"{3}/{4}:$TAG\"\necho \"tag=$TAG\" >> $env:GITHUB_OUTPUT\necho \"image=$IMAGE\" >> $env:GITHUB_OUTPUT\nWrite-Host \"▶ 배포 이미지: $IMAGE\"\n', github.event_name, github.event.inputs.image_tag, github.event.workflow_run.head_branch, secrets.DOCKERHUB_USERNAME, env.IMAGE_NAME)"
+            }
+          },
+          {
+            "key": "shell",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 56,
+              "col": 16,
+              "lit": "pwsh"
+            }
+          }
+        ]
+      },
+      "condition": "success()",
+      "id": "e84ee811-0d70-4dcc-85c5-38302f0da749",
+      "name": "tag"
+    },
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 74,
+        "col": 15,
+        "lit": "Log in to Docker Hub"
+      },
+      "contextName": "__run",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 3,
+              "file": 1,
+              "line": 76,
+              "col": 14,
+              "expr": "format('\"{0}\" | docker login -u \"{1}\" --password-stdin\nWrite-Host \"✅ Docker Hub 로그인 완료\"\n', secrets.DOCKERHUB_TOKEN, secrets.DOCKERHUB_USERNAME)"
+            }
+          },
+          {
+            "key": "shell",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 75,
+              "col": 16,
+              "lit": "pwsh"
+            }
+          }
+        ]
+      },
+      "condition": "success()",
+      "id": "ae40b400-6217-4f99-b0c7-3ca1b78f8b6e",
+      "name": "__run"
+    },
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 80,
+        "col": 15,
+        "lit": "Pull latest image"
+      },
+      "contextName": "__run_2",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 3,
+              "file": 1,
+              "line": 82,
+              "col": 14,
+              "expr": "format('$IMAGE = \"{0}\"\nWrite-Host \"⬇ Pulling $IMAGE ...\"\ndocker pull $IMAGE\nWrite-Host \"✅ Pull 완료\"\n', steps.tag.outputs.image)"
+            }
+          },
+          {
+            "key": "shell",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 81,
+              "col": 16,
+              "lit": "pwsh"
+            }
+          }
+        ]
+      },
+      "condition": "success()",
+      "id": "ab229dc4-1263-4636-bedf-2abe2099d2d5",
+      "name": "__run_2"
+    },
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 88,
+        "col": 15,
+        "lit": "Stop & remove existing container"
+      },
+      "contextName": "__run_3",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 3,
+              "file": 1,
+              "line": 90,
+              "col": 14,
+              "expr": "format('$NAME = \"{0}\"\n$exists = docker ps -a --format ''{{{{.Names}}}}'' | Select-String -Pattern \"^$NAME$\"\nif ($exists) {{\n  Write-Host \"⏹ 기존 컨테이너 중지 및 제거: $NAME\"\n  docker stop $NAME | Out-Null\n  docker rm $NAME | Out-Null\n  Write-Host \"✅ 기존 컨테이너 제거 완료\"\n}} else {{\n  Write-Host \"ℹ 실행 중인 컨테이너 없음 — 신규 배포로 진행\"\n}}\n', env.CONTAINER_NAME)"
+            }
+          },
+          {
+            "key": "shell",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 89,
+              "col": 16,
+              "lit": "pwsh"
+            }
+          }
+        ]
+      },
+      "condition": "success()",
+      "id": "e9623858-b271-4e4a-8f3e-42291621c8db",
+      "name": "__run_3"
+    },
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 102,
+        "col": 15,
+        "lit": "Start new container"
+      },
+      "contextName": "__run_4",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 3,
+              "file": 1,
+              "line": 104,
+              "col": 14,
+              "expr": "format('$IMAGE = \"{0}\"\n$NAME = \"{1}\"\n\ndocker run -d `\n  --name $NAME `\n  --restart unless-stopped `\n  -p \"{2}:{3}\" `\n  --label \"deployed-by=github-actions\" `\n  --label \"commit={4}\" `\n  $IMAGE\n\nWrite-Host \"✅ 새 컨테이너 시작 완료\"\nWrite-Host \"🌐 서비스 주소: http://localhost:{5}\"\n', steps.tag.outputs.image, env.CONTAINER_NAME, env.HOST_PORT, env.CONTAINER_PORT, github.sha, env.HOST_PORT)"
+            }
+          },
+          {
+            "key": "shell",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 103,
+              "col": 16,
+              "lit": "pwsh"
+            }
+          }
+        ]
+      },
+      "condition": "success()",
+      "id": "3b5740f0-b237-4bd2-a2a1-39f716c65d4d",
+      "name": "__run_4"
+    },
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 119,
+        "col": 15,
+        "lit": "Health check"
+      },
+      "contextName": "__run_5",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 3,
+              "file": 1,
+              "line": 121,
+              "col": 14,
+              "expr": "format('Write-Host \"⏳ 헬스체크 대기 (최대 30초)...\"\n$success = $false\nfor ($i = 1; $i -le 10; $i++) {{\n  $STATUS = try {{ docker inspect --format=''{{{{.State.Health.Status}}}}'' \"{0}\" 2>$null }} catch {{ \"unknown\" }}\n  if ([string]::IsNullOrWhiteSpace($STATUS)) {{ $STATUS = \"unknown\" }}\n  \n  $HTTP = try {{ (Invoke-WebRequest -Uri \"http://localhost:{1}/health\" -UseBasicParsing -ErrorAction Stop).StatusCode }} catch {{ \"000\" }}\n\n  Write-Host \"  시도 $i/10 | Health=$STATUS | HTTP=$HTTP\"\n\n  if ($HTTP -eq 200) {{\n    Write-Host \"✅ 서비스 정상 응답 (HTTP 200)\"\n    $success = $true\n    break\n  }}\n\n  if ($i -eq 10) {{\n    Write-Host \"❌ 헬스체크 실패 — 컨테이너 로그:\"\n    docker logs \"{2}\" --tail 40\n    exit 1\n  }}\n\n  Start-Sleep -Seconds 3\n}}\nif (-not $success) {{ exit 1 }}\n', env.CONTAINER_NAME, env.HOST_PORT, env.CONTAINER_NAME)"
+            }
+          },
+          {
+            "key": "shell",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 120,
+              "col": 16,
+              "lit": "pwsh"
+            }
+          }
+        ]
+      },
+      "condition": "success()",
+      "id": "5d7de2fb-61ad-4f44-9e2a-9476ec9ef432",
+      "name": "__run_5"
+    },
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 148,
+        "col": 15,
+        "lit": "Prune dangling images"
+      },
+      "contextName": "__run_6",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 151,
+              "col": 14,
+              "lit": "docker image prune -f\nWrite-Host \"🧹 사용하지 않는 이미지 정리 완료\"\n"
+            }
+          },
+          {
+            "key": "shell",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 150,
+              "col": 16,
+              "lit": "pwsh"
+            }
+          }
+        ]
+      },
+      "condition": "always()",
+      "id": "cdb5fe7f-b57a-46ed-a479-d7621a750f7a",
+      "name": "__run_6"
+    },
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 155,
+        "col": 15,
+        "lit": "Log out from Docker Hub"
+      },
+      "contextName": "__run_7",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 158,
+              "col": 14,
+              "lit": "docker logout"
+            }
+          },
+          {
+            "key": "shell",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 157,
+              "col": 16,
+              "lit": "pwsh"
+            }
+          }
+        ]
+      },
+      "condition": "always()",
+      "id": "f41414f5-1f04-4deb-941b-0e8a12630379",
+      "name": "__run_7"
+    }
+  ],
+  "variables": {
+    "Actions.EnableHttpRedirects": {
+      "value": "true"
+    },
+    "DOCKERHUB_TOKEN": {
+      "value": "***",
+      "isSecret": true
+    },
+    "DOCKERHUB_USERNAME": {
+      "value": "***",
+      "isSecret": true
+    },
+    "DistributedTask.AddWarningToNode12Action": {
+      "value": "true"
+    },
+    "DistributedTask.AddWarningToNode16Action": {
+      "value": "true"
+    },
+    "DistributedTask.AllowRunnerContainerHooks": {
+      "value": "true"
+    },
+    "DistributedTask.DeprecateStepOutputCommands": {
+      "value": "true"
+    },
+    "DistributedTask.DetailUntarFailure": {
+      "value": "true"
+    },
+    "DistributedTask.EnableCompositeActions": {
+      "value": "true"
+    },
+    "DistributedTask.EnableJobServerQueueTelemetry": {
+      "value": "true"
+    },
+    "DistributedTask.EnhancedAnnotations": {
+      "value": "true"
+    },
+    "DistributedTask.ForceGithubJavascriptActionsToNode16": {
+      "value": "true"
+    },
+    "DistributedTask.ForceGithubJavascriptActionsToNode20": {
+      "value": "true"
+    },
+    "DistributedTask.LogTemplateErrorsAsDebugMessages": {
+      "value": "true"
+    },
+    "DistributedTask.MarkJobAsFailedOnWorkerCrash": {
+      "value": "true"
+    },
+    "DistributedTask.NewActionMetadata": {
+      "value": "true"
+    },
+    "DistributedTask.UploadStepSummary": {
+      "value": "true"
+    },
+    "DistributedTask.UseActionArchiveCache": {
+      "value": "true"
+    },
+    "DistributedTask.UseWhich2": {
+      "value": "true"
+    },
+    "RunService.FixEmbeddedIssues": {
+      "value": "true"
+    },
+    "actions.runner.requirenode24": {
+      "value": "false"
+    },
+    "actions.runner.usenode24bydefault": {
+      "value": "false"
+    },
+    "actions.runner.warnonnode20": {
+      "value": "true"
+    },
+    "actions_add_check_run_id_to_job_context": {
+      "value": "true"
+    },
+    "actions_batch_action_resolution": {
+      "value": "false"
+    },
+    "actions_container_action_runner_temp": {
+      "value": "true"
+    },
+    "actions_display_helpful_actions_download_errors": {
+      "value": "true"
+    },
+    "actions_runner_compare_workflow_parser": {
+      "value": "false"
+    },
+    "actions_runner_deprecate_linux_arm32": {
+      "value": "false"
+    },
+    "actions_runner_emit_composite_markers": {
+      "value": "false"
+    },
+    "actions_runner_kill_linux_arm32": {
+      "value": "false"
+    },
+    "actions_runner_node20_removal_date": {
+      "value": ""
+    },
+    "actions_runner_node24_default_date": {
+      "value": ""
+    },
+    "actions_service_container_command": {
+      "value": "true"
+    },
+    "actions_set_orchestration_id_env_for_actions": {
+      "value": "true"
+    },
+    "actions_skip_retry_complete_job_upon_known_errors": {
+      "value": "true"
+    },
+    "actions_snapshot_preflight_hosted_runner_check": {
+      "value": "false"
+    },
+    "actions_snapshot_preflight_image_gen_pool_check": {
+      "value": "false"
+    },
+    "actions_use_bearer_token_for_codeload": {
+      "value": "false"
+    },
+    "actions_uses_cache_service_v2": {
+      "value": "true"
+    },
+    "github_token": {
+      "value": "***",
+      "isSecret": true
+    },
+    "system.from_run_service": {
+      "value": "true"
+    },
+    "system.github.job": {
+      "value": "deploy"
+    },
+    "system.github.launch_endpoint": {
+      "value": "https://launch.actions.githubusercontent.com"
+    },
+    "system.github.results_endpoint": {
+      "value": "https://results-receiver.actions.githubusercontent.com/"
+    },
+    "system.github.results_upload_with_sdk": {
+      "value": "true"
+    },
+    "system.github.token": {
+      "value": "***",
+      "isSecret": true
+    },
+    "system.github.token.permissions": {
+      "value": "{\"Contents\":\"read\",\"Metadata\":\"read\",\"Packages\":\"read\"}"
+    },
+    "system.orchestrationId": {
+      "value": "ef5419d5-a430-421b-a170-d1dc255aad77.deploy.__default"
+    },
+    "system.phaseDisplayName": {
+      "value": "Pull & Run on Local Machine"
+    },
+    "system.runner.lowdiskspacethreshold": {
+      "value": "100"
+    },
+    "system.runnerEnvironment": {
+      "value": "self-hosted"
+    },
+    "system.runnerGroupName": {
+      "value": "Default"
+    }
+  },
+  "messageType": "RunnerJobRequest",
+  "plan": {
+    "scopeIdentifier": "00000000-0000-0000-0000-000000000000",
+    "planType": "actions",
+    "version": 0,
+    "planId": "ef5419d5-a430-421b-a170-d1dc255aad77",
+    "planGroup": null,
+    "artifactUri": null,
+    "artifactLocation": null,
+    "definition": null,
+    "owner": null
+  },
+  "timeline": {
+    "id": "ef5419d5-a430-421b-a170-d1dc255aad77",
+    "changeId": 0,
+    "location": null
+  },
+  "jobId": "82c20d62-d9d0-573d-83fb-5cb6dd3fa6f6",
+  "jobDisplayName": "Pull & Run on Local Machine",
+  "jobName": "__default",
+  "requestId": 0,
+  "lockedUntil": "0001-01-01T00:00:00",
+  "resources": {
+    "endpoints": [
+      {
+        "data": {
+          "ServerId": "",
+          "ServerName": "",
+          "CacheServerUrl": "https://artifactcache.actions.githubusercontent.com/elSwRi5QDq7LrpdU8Ilv2IAfbugjtYkrlDstfZzetu7FXORLKd/",
+          "FeedStreamUrl": "wss://results-receiver.actions.githubusercontent.com/_ws/ingest.sock",
+          "ResultsServiceUrl": "https://results-receiver.actions.githubusercontent.com/",
+          "PipelinesServiceUrl": "https://pipelinesghubeus4.actions.githubusercontent.com/elSwRi5QDq7LrpdU8Ilv2IAfbugjtYkrlDstfZzetu7FXORLKd/",
+          "GenerateIdTokenUrl": "",
+          "ConnectivityChecks": "[\"https://broker.actions.githubusercontent.com/health\",\"https://token.actions.githubusercontent.com/ready\",\"https://run.actions.githubusercontent.com/health\"]"
+        },
+        "name": "SystemVssConnection",
+        "url": "https://run-actions-3-azure-eastus.actions.githubusercontent.com/88/",
+        "authorization": {
+          "parameters": {
+            "AccessToken": "***"
+          },
+          "scheme": "OAuth"
+        },
+        "isShared": false,
+        "isReady": true
+      }
+    ]
+  },
+  "contextData": {
+    "github": {
+      "t": 2,
+      "d": [
+        {
+          "k": "ref",
+          "v": "refs/heads/main"
+        },
+        {
+          "k": "sha",
+          "v": "a7376de9af870da7eb26797175cc397c24d75315"
+        },
+        {
+          "k": "repository",
+          "v": "Dec32th/OpenSource_HW2"
+        },
+        {
+          "k": "repository_owner",
+          "v": "Dec32th"
+        },
+        {
+          "k": "repository_owner_id",
+          "v": "127946197"
+        },
+        {
+          "k": "repositoryUrl",
+          "v": "git://github.com/Dec32th/OpenSource_HW2.git"
+        },
+        {
+          "k": "run_id",
+          "v": "24130915487"
+        },
+        {
+          "k": "run_number",
+          "v": "2"
+        },
+        {
+          "k": "retention_days",
+          "v": "90"
+        },
+        {
+          "k": "run_attempt",
+          "v": "1"
+        },
+        {
+          "k": "artifact_cache_size_limit",
+          "v": "10"
+        },
+        {
+          "k": "repository_visibility",
+          "v": "public"
+        },
+        {
+          "k": "actor_id",
+          "v": "127946197"
+        },
+        {
+          "k": "actor",
+          "v": "Dec32th"
+        },
+        {
+          "k": "workflow",
+          "v": "CD — Deploy to Local (Self-hosted Runner)"
+        },
+        {
+          "k": "head_ref",
+          "v": ""
+        },
+        {
+          "k": "base_ref",
+          "v": ""
+        },
+        {
+          "k": "event_name",
+          "v": "workflow_run"
+        },
+        {
+          "k": "server_url",
+          "v": "https://github.com"
+        },
+        {
+          "k": "api_url",
+          "v": "https://api.github.com"
+        },
+        {
+          "k": "graphql_url",
+          "v": "https://api.github.com/graphql"
+        },
+        {
+          "k": "ref_name",
+          "v": "main"
+        },
+        {
+          "k": "ref_protected",
+          "v": false
+        },
+        {
+          "k": "ref_type",
+          "v": "branch"
+        },
+        {
+          "k": "secret_source",
+          "v": "Actions"
+        },
+        {
+          "k": "event",
+          "v": {
+            "t": 2,
+            "d": [
+              {
+                "k": "action",
+                "v": "completed"
+              },
+              {
+                "k": "repository",
+                "v": {
+                  "t": 2,
+                  "d": [
+                    {
+                      "k": "allow_forking",
+                      "v": true
+                    },
+                    {
+                      "k": "archive_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/{archive_format}{/ref}"
+                    },
+                    {
+                      "k": "archived",
+                      "v": false
+                    },
+                    {
+                      "k": "assignees_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/assignees{/user}"
+                    },
+                    {
+                      "k": "blobs_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/blobs{/sha}"
+                    },
+                    {
+                      "k": "branches_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/branches{/branch}"
+                    },
+                    {
+                      "k": "clone_url",
+                      "v": "https://github.com/Dec32th/OpenSource_HW2.git"
+                    },
+                    {
+                      "k": "collaborators_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/collaborators{/collaborator}"
+                    },
+                    {
+                      "k": "comments_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/comments{/number}"
+                    },
+                    {
+                      "k": "commits_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/commits{/sha}"
+                    },
+                    {
+                      "k": "compare_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/compare/{base}...{head}"
+                    },
+                    {
+                      "k": "contents_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/contents/{+path}"
+                    },
+                    {
+                      "k": "contributors_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/contributors"
+                    },
+                    {
+                      "k": "created_at",
+                      "v": "2026-04-02T10:28:39Z"
+                    },
+                    {
+                      "k": "default_branch",
+                      "v": "main"
+                    },
+                    {
+                      "k": "deployments_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/deployments"
+                    },
+                    {
+                      "k": "description",
+                      "v": "Empty classroom matching system API"
+                    },
+                    {
+                      "k": "disabled",
+                      "v": false
+                    },
+                    {
+                      "k": "downloads_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/downloads"
+                    },
+                    {
+                      "k": "events_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/events"
+                    },
+                    {
+                      "k": "fork",
+                      "v": false
+                    },
+                    {
+                      "k": "forks",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "forks_count",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "forks_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/forks"
+                    },
+                    {
+                      "k": "full_name",
+                      "v": "Dec32th/OpenSource_HW2"
+                    },
+                    {
+                      "k": "git_commits_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/commits{/sha}"
+                    },
+                    {
+                      "k": "git_refs_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/refs{/sha}"
+                    },
+                    {
+                      "k": "git_tags_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/tags{/sha}"
+                    },
+                    {
+                      "k": "git_url",
+                      "v": "git://github.com/Dec32th/OpenSource_HW2.git"
+                    },
+                    {
+                      "k": "has_discussions",
+                      "v": false
+                    },
+                    {
+                      "k": "has_downloads",
+                      "v": true
+                    },
+                    {
+                      "k": "has_issues",
+                      "v": true
+                    },
+                    {
+                      "k": "has_pages",
+                      "v": false
+                    },
+                    {
+                      "k": "has_projects",
+                      "v": true
+                    },
+                    {
+                      "k": "has_pull_requests",
+                      "v": true
+                    },
+                    {
+                      "k": "has_wiki",
+                      "v": true
+                    },
+                    {
+                      "k": "homepage",
+                      "v": null
+                    },
+                    {
+                      "k": "hooks_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/hooks"
+                    },
+                    {
+                      "k": "html_url",
+                      "v": "https://github.com/Dec32th/OpenSource_HW2"
+                    },
+                    {
+                      "k": "id",
+                      "v": 1199417989.0
+                    },
+                    {
+                      "k": "is_template",
+                      "v": false
+                    },
+                    {
+                      "k": "issue_comment_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/issues/comments{/number}"
+                    },
+                    {
+                      "k": "issue_events_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/issues/events{/number}"
+                    },
+                    {
+                      "k": "issues_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/issues{/number}"
+                    },
+                    {
+                      "k": "keys_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/keys{/key_id}"
+                    },
+                    {
+                      "k": "labels_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/labels{/name}"
+                    },
+                    {
+                      "k": "language",
+                      "v": "JavaScript"
+                    },
+                    {
+                      "k": "languages_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/languages"
+                    },
+                    {
+                      "k": "license",
+                      "v": null
+                    },
+                    {
+                      "k": "merges_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/merges"
+                    },
+                    {
+                      "k": "milestones_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/milestones{/number}"
+                    },
+                    {
+                      "k": "mirror_url",
+                      "v": null
+                    },
+                    {
+                      "k": "name",
+                      "v": "OpenSource_HW2"
+                    },
+                    {
+                      "k": "node_id",
+                      "v": "R_kgDOR32qhQ"
+                    },
+                    {
+                      "k": "notifications_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/notifications{?since,all,participating}"
+                    },
+                    {
+                      "k": "open_issues",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "open_issues_count",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "owner",
+                      "v": {
+                        "t": 2,
+                        "d": [
+                          {
+                            "k": "avatar_url",
+                            "v": "https://avatars.githubusercontent.com/u/127946197?v=4"
+                          },
+                          {
+                            "k": "events_url",
+                            "v": "https://api.github.com/users/Dec32th/events{/privacy}"
+                          },
+                          {
+                            "k": "followers_url",
+                            "v": "https://api.github.com/users/Dec32th/followers"
+                          },
+                          {
+                            "k": "following_url",
+                            "v": "https://api.github.com/users/Dec32th/following{/other_user}"
+                          },
+                          {
+                            "k": "gists_url",
+                            "v": "https://api.github.com/users/Dec32th/gists{/gist_id}"
+                          },
+                          {
+                            "k": "gravatar_id",
+                            "v": ""
+                          },
+                          {
+                            "k": "html_url",
+                            "v": "https://github.com/Dec32th"
+                          },
+                          {
+                            "k": "id",
+                            "v": 127946197.0
+                          },
+                          {
+                            "k": "login",
+                            "v": "Dec32th"
+                          },
+                          {
+                            "k": "node_id",
+                            "v": "U_kgDOB6BN1Q"
+                          },
+                          {
+                            "k": "organizations_url",
+                            "v": "https://api.github.com/users/Dec32th/orgs"
+                          },
+                          {
+                            "k": "received_events_url",
+                            "v": "https://api.github.com/users/Dec32th/received_events"
+                          },
+                          {
+                            "k": "repos_url",
+                            "v": "https://api.github.com/users/Dec32th/repos"
+                          },
+                          {
+                            "k": "site_admin",
+                            "v": false
+                          },
+                          {
+                            "k": "starred_url",
+                            "v": "https://api.github.com/users/Dec32th/starred{/owner}{/repo}"
+                          },
+                          {
+                            "k": "subscriptions_url",
+                            "v": "https://api.github.com/users/Dec32th/subscriptions"
+                          },
+                          {
+                            "k": "type",
+                            "v": "User"
+                          },
+                          {
+                            "k": "url",
+                            "v": "https://api.github.com/users/Dec32th"
+                          },
+                          {
+                            "k": "user_view_type",
+                            "v": "public"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "k": "private",
+                      "v": false
+                    },
+                    {
+                      "k": "pull_request_creation_policy",
+                      "v": "all"
+                    },
+                    {
+                      "k": "pulls_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/pulls{/number}"
+                    },
+                    {
+                      "k": "pushed_at",
+                      "v": "2026-04-08T10:33:01Z"
+                    },
+                    {
+                      "k": "releases_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/releases{/id}"
+                    },
+                    {
+                      "k": "size",
+                      "v": 18.0
+                    },
+                    {
+                      "k": "ssh_url",
+                      "v": "git@github.com:Dec32th/OpenSource_HW2.git"
+                    },
+                    {
+                      "k": "stargazers_count",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "stargazers_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/stargazers"
+                    },
+                    {
+                      "k": "statuses_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/statuses/{sha}"
+                    },
+                    {
+                      "k": "subscribers_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/subscribers"
+                    },
+                    {
+                      "k": "subscription_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/subscription"
+                    },
+                    {
+                      "k": "svn_url",
+                      "v": "https://github.com/Dec32th/OpenSource_HW2"
+                    },
+                    {
+                      "k": "tags_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/tags"
+                    },
+                    {
+                      "k": "teams_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/teams"
+                    },
+                    {
+                      "k": "topics",
+                      "v": {
+                        "t": 1
+                      }
+                    },
+                    {
+                      "k": "trees_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/trees{/sha}"
+                    },
+                    {
+                      "k": "updated_at",
+                      "v": "2026-04-08T10:33:05Z"
+                    },
+                    {
+                      "k": "url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2"
+                    },
+                    {
+                      "k": "visibility",
+                      "v": "public"
+                    },
+                    {
+                      "k": "watchers",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "watchers_count",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "web_commit_signoff_required",
+                      "v": false
+                    }
+                  ]
+                }
+              },
+              {
+                "k": "sender",
+                "v": {
+                  "t": 2,
+                  "d": [
+                    {
+                      "k": "avatar_url",
+                      "v": "https://avatars.githubusercontent.com/u/127946197?v=4"
+                    },
+                    {
+                      "k": "events_url",
+                      "v": "https://api.github.com/users/Dec32th/events{/privacy}"
+                    },
+                    {
+                      "k": "followers_url",
+                      "v": "https://api.github.com/users/Dec32th/followers"
+                    },
+                    {
+                      "k": "following_url",
+                      "v": "https://api.github.com/users/Dec32th/following{/other_user}"
+                    },
+                    {
+                      "k": "gists_url",
+                      "v": "https://api.github.com/users/Dec32th/gists{/gist_id}"
+                    },
+                    {
+                      "k": "gravatar_id",
+                      "v": ""
+                    },
+                    {
+                      "k": "html_url",
+                      "v": "https://github.com/Dec32th"
+                    },
+                    {
+                      "k": "id",
+                      "v": 127946197.0
+                    },
+                    {
+                      "k": "login",
+                      "v": "Dec32th"
+                    },
+                    {
+                      "k": "node_id",
+                      "v": "U_kgDOB6BN1Q"
+                    },
+                    {
+                      "k": "organizations_url",
+                      "v": "https://api.github.com/users/Dec32th/orgs"
+                    },
+                    {
+                      "k": "received_events_url",
+                      "v": "https://api.github.com/users/Dec32th/received_events"
+                    },
+                    {
+                      "k": "repos_url",
+                      "v": "https://api.github.com/users/Dec32th/repos"
+                    },
+                    {
+                      "k": "site_admin",
+                      "v": false
+                    },
+                    {
+                      "k": "starred_url",
+                      "v": "https://api.github.com/users/Dec32th/starred{/owner}{/repo}"
+                    },
+                    {
+                      "k": "subscriptions_url",
+                      "v": "https://api.github.com/users/Dec32th/subscriptions"
+                    },
+                    {
+                      "k": "type",
+                      "v": "User"
+                    },
+                    {
+                      "k": "url",
+                      "v": "https://api.github.com/users/Dec32th"
+                    },
+                    {
+                      "k": "user_view_type",
+                      "v": "public"
+                    }
+                  ]
+                }
+              },
+              {
+                "k": "workflow",
+                "v": {
+                  "t": 2,
+                  "d": [
+                    {
+                      "k": "badge_url",
+                      "v": "https://github.com/Dec32th/OpenSource_HW2/workflows/CI%20%E2%80%94%20Build%20&%20Push%20Docker%20Image/badge.svg"
+                    },
+                    {
+                      "k": "created_at",
+                      "v": "2026-04-08T05:17:42.000Z"
+                    },
+                    {
+                      "k": "html_url",
+                      "v": "https://github.com/Dec32th/OpenSource_HW2/blob/main/.github/workflows/ci.yml"
+                    },
+                    {
+                      "k": "id",
+                      "v": 257734333.0
+                    },
+                    {
+                      "k": "name",
+                      "v": "CI — Build & Push Docker Image"
+                    },
+                    {
+                      "k": "node_id",
+                      "v": "W_kwDOR32qhc4PXLa9"
+                    },
+                    {
+                      "k": "path",
+                      "v": ".github/workflows/ci.yml"
+                    },
+                    {
+                      "k": "state",
+                      "v": "active"
+                    },
+                    {
+                      "k": "updated_at",
+                      "v": "2026-04-08T05:17:42.000Z"
+                    },
+                    {
+                      "k": "url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/actions/workflows/257734333"
+                    }
+                  ]
+                }
+              },
+              {
+                "k": "workflow_run",
+                "v": {
+                  "t": 2,
+                  "d": [
+                    {
+                      "k": "actor",
+                      "v": {
+                        "t": 2,
+                        "d": [
+                          {
+                            "k": "avatar_url",
+                            "v": "https://avatars.githubusercontent.com/u/127946197?v=4"
+                          },
+                          {
+                            "k": "events_url",
+                            "v": "https://api.github.com/users/Dec32th/events{/privacy}"
+                          },
+                          {
+                            "k": "followers_url",
+                            "v": "https://api.github.com/users/Dec32th/followers"
+                          },
+                          {
+                            "k": "following_url",
+                            "v": "https://api.github.com/users/Dec32th/following{/other_user}"
+                          },
+                          {
+                            "k": "gists_url",
+                            "v": "https://api.github.com/users/Dec32th/gists{/gist_id}"
+                          },
+                          {
+                            "k": "gravatar_id",
+                            "v": ""
+                          },
+                          {
+                            "k": "html_url",
+                            "v": "https://github.com/Dec32th"
+                          },
+                          {
+                            "k": "id",
+                            "v": 127946197.0
+                          },
+                          {
+                            "k": "login",
+                            "v": "Dec32th"
+                          },
+                          {
+                            "k": "node_id",
+                            "v": "U_kgDOB6BN1Q"
+                          },
+                          {
+                            "k": "organizations_url",
+                            "v": "https://api.github.com/users/Dec32th/orgs"
+                          },
+                          {
+                            "k": "received_events_url",
+                            "v": "https://api.github.com/users/Dec32th/received_events"
+                          },
+                          {
+                            "k": "repos_url",
+                            "v": "https://api.github.com/users/Dec32th/repos"
+                          },
+                          {
+                            "k": "site_admin",
+                            "v": false
+                          },
+                          {
+                            "k": "starred_url",
+                            "v": "https://api.github.com/users/Dec32th/starred{/owner}{/repo}"
+                          },
+                          {
+                            "k": "subscriptions_url",
+                            "v": "https://api.github.com/users/Dec32th/subscriptions"
+                          },
+                          {
+                            "k": "type",
+                            "v": "User"
+                          },
+                          {
+                            "k": "url",
+                            "v": "https://api.github.com/users/Dec32th"
+                          },
+                          {
+                            "k": "user_view_type",
+                            "v": "public"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "k": "artifacts_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/actions/runs/24130873118/artifacts"
+                    },
+                    {
+                      "k": "cancel_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/actions/runs/24130873118/cancel"
+                    },
+                    {
+                      "k": "check_suite_id",
+                      "v": 63759289550.0
+                    },
+                    {
+                      "k": "check_suite_node_id",
+                      "v": "CS_kwDOR32qhc8AAAAO2FmMzg"
+                    },
+                    {
+                      "k": "check_suite_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/check-suites/63759289550"
+                    },
+                    {
+                      "k": "conclusion",
+                      "v": "success"
+                    },
+                    {
+                      "k": "created_at",
+                      "v": "2026-04-08T10:33:03Z"
+                    },
+                    {
+                      "k": "display_title",
+                      "v": "CD 환경 수정"
+                    },
+                    {
+                      "k": "event",
+                      "v": "push"
+                    },
+                    {
+                      "k": "head_branch",
+                      "v": "main"
+                    },
+                    {
+                      "k": "head_commit",
+                      "v": {
+                        "t": 2,
+                        "d": [
+                          {
+                            "k": "author",
+                            "v": {
+                              "t": 2,
+                              "d": [
+                                {
+                                  "k": "email",
+                                  "v": "hkw_61@naver.com"
+                                },
+                                {
+                                  "k": "name",
+                                  "v": "wonhyekyeong"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "k": "committer",
+                            "v": {
+                              "t": 2,
+                              "d": [
+                                {
+                                  "k": "email",
+                                  "v": "hkw_61@naver.com"
+                                },
+                                {
+                                  "k": "name",
+                                  "v": "wonhyekyeong"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "k": "id",
+                            "v": "a7376de9af870da7eb26797175cc397c24d75315"
+                          },
+                          {
+                            "k": "message",
+                            "v": "CD 환경 수정"
+                          },
+                          {
+                            "k": "timestamp",
+                            "v": "2026-04-08T10:32:34Z"
+                          },
+                          {
+                            "k": "tree_id",
+                            "v": "526b7b40840d8818348eff56a66d9543a9d97f96"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "k": "head_repository",
+                      "v": {
+                        "t": 2,
+                        "d": [
+                          {
+                            "k": "archive_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/{archive_format}{/ref}"
+                          },
+                          {
+                            "k": "assignees_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/assignees{/user}"
+                          },
+                          {
+                            "k": "blobs_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/blobs{/sha}"
+                          },
+                          {
+                            "k": "branches_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/branches{/branch}"
+                          },
+                          {
+                            "k": "collaborators_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/collaborators{/collaborator}"
+                          },
+                          {
+                            "k": "comments_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/comments{/number}"
+                          },
+                          {
+                            "k": "commits_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/commits{/sha}"
+                          },
+                          {
+                            "k": "compare_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/compare/{base}...{head}"
+                          },
+                          {
+                            "k": "contents_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/contents/{+path}"
+                          },
+                          {
+                            "k": "contributors_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/contributors"
+                          },
+                          {
+                            "k": "deployments_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/deployments"
+                          },
+                          {
+                            "k": "description",
+                            "v": "Empty classroom matching system API"
+                          },
+                          {
+                            "k": "downloads_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/downloads"
+                          },
+                          {
+                            "k": "events_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/events"
+                          },
+                          {
+                            "k": "fork",
+                            "v": false
+                          },
+                          {
+                            "k": "forks_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/forks"
+                          },
+                          {
+                            "k": "full_name",
+                            "v": "Dec32th/OpenSource_HW2"
+                          },
+                          {
+                            "k": "git_commits_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/commits{/sha}"
+                          },
+                          {
+                            "k": "git_refs_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/refs{/sha}"
+                          },
+                          {
+                            "k": "git_tags_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/tags{/sha}"
+                          },
+                          {
+                            "k": "hooks_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/hooks"
+                          },
+                          {
+                            "k": "html_url",
+                            "v": "https://github.com/Dec32th/OpenSource_HW2"
+                          },
+                          {
+                            "k": "id",
+                            "v": 1199417989.0
+                          },
+                          {
+                            "k": "issue_comment_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/issues/comments{/number}"
+                          },
+                          {
+                            "k": "issue_events_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/issues/events{/number}"
+                          },
+                          {
+                            "k": "issues_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/issues{/number}"
+                          },
+                          {
+                            "k": "keys_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/keys{/key_id}"
+                          },
+                          {
+                            "k": "labels_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/labels{/name}"
+                          },
+                          {
+                            "k": "languages_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/languages"
+                          },
+                          {
+                            "k": "merges_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/merges"
+                          },
+                          {
+                            "k": "milestones_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/milestones{/number}"
+                          },
+                          {
+                            "k": "name",
+                            "v": "OpenSource_HW2"
+                          },
+                          {
+                            "k": "node_id",
+                            "v": "R_kgDOR32qhQ"
+                          },
+                          {
+                            "k": "notifications_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/notifications{?since,all,participating}"
+                          },
+                          {
+                            "k": "owner",
+                            "v": {
+                              "t": 2,
+                              "d": [
+                                {
+                                  "k": "avatar_url",
+                                  "v": "https://avatars.githubusercontent.com/u/127946197?v=4"
+                                },
+                                {
+                                  "k": "events_url",
+                                  "v": "https://api.github.com/users/Dec32th/events{/privacy}"
+                                },
+                                {
+                                  "k": "followers_url",
+                                  "v": "https://api.github.com/users/Dec32th/followers"
+                                },
+                                {
+                                  "k": "following_url",
+                                  "v": "https://api.github.com/users/Dec32th/following{/other_user}"
+                                },
+                                {
+                                  "k": "gists_url",
+                                  "v": "https://api.github.com/users/Dec32th/gists{/gist_id}"
+                                },
+                                {
+                                  "k": "gravatar_id",
+                                  "v": ""
+                                },
+                                {
+                                  "k": "html_url",
+                                  "v": "https://github.com/Dec32th"
+                                },
+                                {
+                                  "k": "id",
+                                  "v": 127946197.0
+                                },
+                                {
+                                  "k": "login",
+                                  "v": "Dec32th"
+                                },
+                                {
+                                  "k": "node_id",
+                                  "v": "U_kgDOB6BN1Q"
+                                },
+                                {
+                                  "k": "organizations_url",
+                                  "v": "https://api.github.com/users/Dec32th/orgs"
+                                },
+                                {
+                                  "k": "received_events_url",
+                                  "v": "https://api.github.com/users/Dec32th/received_events"
+                                },
+                                {
+                                  "k": "repos_url",
+                                  "v": "https://api.github.com/users/Dec32th/repos"
+                                },
+                                {
+                                  "k": "site_admin",
+                                  "v": false
+                                },
+                                {
+                                  "k": "starred_url",
+                                  "v": "https://api.github.com/users/Dec32th/starred{/owner}{/repo}"
+                                },
+                                {
+                                  "k": "subscriptions_url",
+                                  "v": "https://api.github.com/users/Dec32th/subscriptions"
+                                },
+                                {
+                                  "k": "type",
+                                  "v": "User"
+                                },
+                                {
+                                  "k": "url",
+                                  "v": "https://api.github.com/users/Dec32th"
+                                },
+                                {
+                                  "k": "user_view_type",
+                                  "v": "public"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "k": "private",
+                            "v": false
+                          },
+                          {
+                            "k": "pulls_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/pulls{/number}"
+                          },
+                          {
+                            "k": "releases_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/releases{/id}"
+                          },
+                          {
+                            "k": "stargazers_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/stargazers"
+                          },
+                          {
+                            "k": "statuses_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/statuses/{sha}"
+                          },
+                          {
+                            "k": "subscribers_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/subscribers"
+                          },
+                          {
+                            "k": "subscription_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/subscription"
+                          },
+                          {
+                            "k": "tags_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/tags"
+                          },
+                          {
+                            "k": "teams_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/teams"
+                          },
+                          {
+                            "k": "trees_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/trees{/sha}"
+                          },
+                          {
+                            "k": "url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "k": "head_sha",
+                      "v": "a7376de9af870da7eb26797175cc397c24d75315"
+                    },
+                    {
+                      "k": "html_url",
+                      "v": "https://github.com/Dec32th/OpenSource_HW2/actions/runs/24130873118"
+                    },
+                    {
+                      "k": "id",
+                      "v": 24130873118.0
+                    },
+                    {
+                      "k": "jobs_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/actions/runs/24130873118/jobs"
+                    },
+                    {
+                      "k": "logs_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/actions/runs/24130873118/logs"
+                    },
+                    {
+                      "k": "name",
+                      "v": "CI — Build & Push Docker Image"
+                    },
+                    {
+                      "k": "node_id",
+                      "v": "WFR_kwLOR32qhc8AAAAFnk_nHg"
+                    },
+                    {
+                      "k": "path",
+                      "v": ".github/workflows/ci.yml"
+                    },
+                    {
+                      "k": "previous_attempt_url",
+                      "v": null
+                    },
+                    {
+                      "k": "pull_requests",
+                      "v": {
+                        "t": 1
+                      }
+                    },
+                    {
+                      "k": "referenced_workflows",
+                      "v": {
+                        "t": 1
+                      }
+                    },
+                    {
+                      "k": "repository",
+                      "v": {
+                        "t": 2,
+                        "d": [
+                          {
+                            "k": "archive_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/{archive_format}{/ref}"
+                          },
+                          {
+                            "k": "assignees_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/assignees{/user}"
+                          },
+                          {
+                            "k": "blobs_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/blobs{/sha}"
+                          },
+                          {
+                            "k": "branches_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/branches{/branch}"
+                          },
+                          {
+                            "k": "collaborators_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/collaborators{/collaborator}"
+                          },
+                          {
+                            "k": "comments_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/comments{/number}"
+                          },
+                          {
+                            "k": "commits_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/commits{/sha}"
+                          },
+                          {
+                            "k": "compare_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/compare/{base}...{head}"
+                          },
+                          {
+                            "k": "contents_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/contents/{+path}"
+                          },
+                          {
+                            "k": "contributors_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/contributors"
+                          },
+                          {
+                            "k": "deployments_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/deployments"
+                          },
+                          {
+                            "k": "description",
+                            "v": "Empty classroom matching system API"
+                          },
+                          {
+                            "k": "downloads_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/downloads"
+                          },
+                          {
+                            "k": "events_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/events"
+                          },
+                          {
+                            "k": "fork",
+                            "v": false
+                          },
+                          {
+                            "k": "forks_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/forks"
+                          },
+                          {
+                            "k": "full_name",
+                            "v": "Dec32th/OpenSource_HW2"
+                          },
+                          {
+                            "k": "git_commits_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/commits{/sha}"
+                          },
+                          {
+                            "k": "git_refs_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/refs{/sha}"
+                          },
+                          {
+                            "k": "git_tags_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/tags{/sha}"
+                          },
+                          {
+                            "k": "hooks_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/hooks"
+                          },
+                          {
+                            "k": "html_url",
+                            "v": "https://github.com/Dec32th/OpenSource_HW2"
+                          },
+                          {
+                            "k": "id",
+                            "v": 1199417989.0
+                          },
+                          {
+                            "k": "issue_comment_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/issues/comments{/number}"
+                          },
+                          {
+                            "k": "issue_events_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/issues/events{/number}"
+                          },
+                          {
+                            "k": "issues_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/issues{/number}"
+                          },
+                          {
+                            "k": "keys_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/keys{/key_id}"
+                          },
+                          {
+                            "k": "labels_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/labels{/name}"
+                          },
+                          {
+                            "k": "languages_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/languages"
+                          },
+                          {
+                            "k": "merges_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/merges"
+                          },
+                          {
+                            "k": "milestones_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/milestones{/number}"
+                          },
+                          {
+                            "k": "name",
+                            "v": "OpenSource_HW2"
+                          },
+                          {
+                            "k": "node_id",
+                            "v": "R_kgDOR32qhQ"
+                          },
+                          {
+                            "k": "notifications_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/notifications{?since,all,participating}"
+                          },
+                          {
+                            "k": "owner",
+                            "v": {
+                              "t": 2,
+                              "d": [
+                                {
+                                  "k": "avatar_url",
+                                  "v": "https://avatars.githubusercontent.com/u/127946197?v=4"
+                                },
+                                {
+                                  "k": "events_url",
+                                  "v": "https://api.github.com/users/Dec32th/events{/privacy}"
+                                },
+                                {
+                                  "k": "followers_url",
+                                  "v": "https://api.github.com/users/Dec32th/followers"
+                                },
+                                {
+                                  "k": "following_url",
+                                  "v": "https://api.github.com/users/Dec32th/following{/other_user}"
+                                },
+                                {
+                                  "k": "gists_url",
+                                  "v": "https://api.github.com/users/Dec32th/gists{/gist_id}"
+                                },
+                                {
+                                  "k": "gravatar_id",
+                                  "v": ""
+                                },
+                                {
+                                  "k": "html_url",
+                                  "v": "https://github.com/Dec32th"
+                                },
+                                {
+                                  "k": "id",
+                                  "v": 127946197.0
+                                },
+                                {
+                                  "k": "login",
+                                  "v": "Dec32th"
+                                },
+                                {
+                                  "k": "node_id",
+                                  "v": "U_kgDOB6BN1Q"
+                                },
+                                {
+                                  "k": "organizations_url",
+                                  "v": "https://api.github.com/users/Dec32th/orgs"
+                                },
+                                {
+                                  "k": "received_events_url",
+                                  "v": "https://api.github.com/users/Dec32th/received_events"
+                                },
+                                {
+                                  "k": "repos_url",
+                                  "v": "https://api.github.com/users/Dec32th/repos"
+                                },
+                                {
+                                  "k": "site_admin",
+                                  "v": false
+                                },
+                                {
+                                  "k": "starred_url",
+                                  "v": "https://api.github.com/users/Dec32th/starred{/owner}{/repo}"
+                                },
+                                {
+                                  "k": "subscriptions_url",
+                                  "v": "https://api.github.com/users/Dec32th/subscriptions"
+                                },
+                                {
+                                  "k": "type",
+                                  "v": "User"
+                                },
+                                {
+                                  "k": "url",
+                                  "v": "https://api.github.com/users/Dec32th"
+                                },
+                                {
+                                  "k": "user_view_type",
+                                  "v": "public"
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "k": "private",
+                            "v": false
+                          },
+                          {
+                            "k": "pulls_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/pulls{/number}"
+                          },
+                          {
+                            "k": "releases_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/releases{/id}"
+                          },
+                          {
+                            "k": "stargazers_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/stargazers"
+                          },
+                          {
+                            "k": "statuses_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/statuses/{sha}"
+                          },
+                          {
+                            "k": "subscribers_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/subscribers"
+                          },
+                          {
+                            "k": "subscription_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/subscription"
+                          },
+                          {
+                            "k": "tags_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/tags"
+                          },
+                          {
+                            "k": "teams_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/teams"
+                          },
+                          {
+                            "k": "trees_url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/git/trees{/sha}"
+                          },
+                          {
+                            "k": "url",
+                            "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "k": "rerun_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/actions/runs/24130873118/rerun"
+                    },
+                    {
+                      "k": "run_attempt",
+                      "v": 1.0
+                    },
+                    {
+                      "k": "run_number",
+                      "v": 3.0
+                    },
+                    {
+                      "k": "run_started_at",
+                      "v": "2026-04-08T10:33:03Z"
+                    },
+                    {
+                      "k": "status",
+                      "v": "completed"
+                    },
+                    {
+                      "k": "triggering_actor",
+                      "v": {
+                        "t": 2,
+                        "d": [
+                          {
+                            "k": "avatar_url",
+                            "v": "https://avatars.githubusercontent.com/u/127946197?v=4"
+                          },
+                          {
+                            "k": "events_url",
+                            "v": "https://api.github.com/users/Dec32th/events{/privacy}"
+                          },
+                          {
+                            "k": "followers_url",
+                            "v": "https://api.github.com/users/Dec32th/followers"
+                          },
+                          {
+                            "k": "following_url",
+                            "v": "https://api.github.com/users/Dec32th/following{/other_user}"
+                          },
+                          {
+                            "k": "gists_url",
+                            "v": "https://api.github.com/users/Dec32th/gists{/gist_id}"
+                          },
+                          {
+                            "k": "gravatar_id",
+                            "v": ""
+                          },
+                          {
+                            "k": "html_url",
+                            "v": "https://github.com/Dec32th"
+                          },
+                          {
+                            "k": "id",
+                            "v": 127946197.0
+                          },
+                          {
+                            "k": "login",
+                            "v": "Dec32th"
+                          },
+                          {
+                            "k": "node_id",
+                            "v": "U_kgDOB6BN1Q"
+                          },
+                          {
+                            "k": "organizations_url",
+                            "v": "https://api.github.com/users/Dec32th/orgs"
+                          },
+                          {
+                            "k": "received_events_url",
+                            "v": "https://api.github.com/users/Dec32th/received_events"
+                          },
+                          {
+                            "k": "repos_url",
+                            "v": "https://api.github.com/users/Dec32th/repos"
+                          },
+                          {
+                            "k": "site_admin",
+                            "v": false
+                          },
+                          {
+                            "k": "starred_url",
+                            "v": "https://api.github.com/users/Dec32th/starred{/owner}{/repo}"
+                          },
+                          {
+                            "k": "subscriptions_url",
+                            "v": "https://api.github.com/users/Dec32th/subscriptions"
+                          },
+                          {
+                            "k": "type",
+                            "v": "User"
+                          },
+                          {
+                            "k": "url",
+                            "v": "https://api.github.com/users/Dec32th"
+                          },
+                          {
+                            "k": "user_view_type",
+                            "v": "public"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "k": "updated_at",
+                      "v": "2026-04-08T10:34:06Z"
+                    },
+                    {
+                      "k": "url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/actions/runs/24130873118"
+                    },
+                    {
+                      "k": "workflow_id",
+                      "v": 257734333.0
+                    },
+                    {
+                      "k": "workflow_url",
+                      "v": "https://api.github.com/repos/Dec32th/OpenSource_HW2/actions/workflows/257734333"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "k": "workflow_ref",
+          "v": "Dec32th/OpenSource_HW2/.github/workflows/deploy.yml@refs/heads/main"
+        },
+        {
+          "k": "workflow_sha",
+          "v": "a7376de9af870da7eb26797175cc397c24d75315"
+        },
+        {
+          "k": "repository_id",
+          "v": "1199417989"
+        },
+        {
+          "k": "triggering_actor",
+          "v": "Dec32th"
+        }
+      ]
+    },
+    "inputs": {
+      "t": 2
+    },
+    "job": {
+      "t": 2,
+      "d": [
+        {
+          "k": "check_run_id",
+          "v": 70407039048.0
+        }
+      ]
+    },
+    "matrix": null,
+    "needs": {
+      "t": 2
+    },
+    "strategy": {
+      "t": 2,
+      "d": [
+        {
+          "k": "fail-fast",
+          "v": true
+        },
+        {
+          "k": "job-index",
+          "v": 0.0
+        },
+        {
+          "k": "job-total",
+          "v": 1.0
+        },
+        {
+          "k": "max-parallel",
+          "v": 1.0
+        }
+      ]
+    },
+    "vars": {
+      "t": 2
+    }
+  },
+  "billingOwnerId": "U_kgDOB6BN1Q"
+}
+[2026-04-08 10:34:14Z INFO JobRunner] Job ID 82c20d62-d9d0-573d-83fb-5cb6dd3fa6f6
+[2026-04-08 10:34:14Z INFO ConfigurationStore] currentAssemblyLocation: C:\HW2\actions-runner\bin\Runner.Worker.dll
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO ConfigurationStore] binPath: C:\HW2\actions-runner\bin
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO ConfigurationStore] RootFolder: C:\HW2\actions-runner
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known config file 'Runner': 'C:\HW2\actions-runner\.runner'
+[2026-04-08 10:34:14Z INFO ConfigurationStore] ConfigFilePath: C:\HW2\actions-runner\.runner
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known config file 'MigratedRunner': 'C:\HW2\actions-runner\.runner_migrated'
+[2026-04-08 10:34:14Z INFO ConfigurationStore] MigratedConfigFilePath: C:\HW2\actions-runner\.runner_migrated
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known config file 'Credentials': 'C:\HW2\actions-runner\.credentials'
+[2026-04-08 10:34:14Z INFO ConfigurationStore] CredFilePath: C:\HW2\actions-runner\.credentials
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known config file 'MigratedCredentials': 'C:\HW2\actions-runner\.credentials_migrated'
+[2026-04-08 10:34:14Z INFO ConfigurationStore] MigratedCredFilePath: C:\HW2\actions-runner\.credentials_migrated
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known config file 'Service': 'C:\HW2\actions-runner\.service'
+[2026-04-08 10:34:14Z INFO ConfigurationStore] ServiceConfigFilePath: C:\HW2\actions-runner\.service
+[2026-04-08 10:34:14Z INFO ConfigurationStore] Read setting file: 395 chars
+[2026-04-08 10:34:14Z INFO JobRunner] Initializing launch client
+[2026-04-08 10:34:14Z INFO JobServerQueue] Initializing results client
+[2026-04-08 10:34:14Z INFO ResultServer] Creating websocket client ...wss://results-receiver.actions.githubusercontent.com/_ws/ingest.sock
+[2026-04-08 10:34:14Z INFO ResultServer] Attempting to start websocket client with delay 00:00:00.
+[2026-04-08 10:34:14Z INFO JobServerQueue] Start process web console line queue.
+[2026-04-08 10:34:14Z INFO JobServerQueue] Start process file upload queue.
+[2026-04-08 10:34:14Z INFO JobServerQueue] Start results file upload queue.
+[2026-04-08 10:34:14Z INFO JobServerQueue] Starting results-based upload queue...
+[2026-04-08 10:34:14Z INFO JobServerQueue] Start process timeline update queue.
+[2026-04-08 10:34:14Z INFO ExecutionContext] Initializing Job context
+[2026-04-08 10:34:14Z INFO ExecutionContext] Initialize GitHub context
+[2026-04-08 10:34:14Z INFO ExecutionContext] Initialize Env context
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO JobRunner] Starting the job execution context.
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO JobRunner] Validating directory permissions for: 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Tools': 'C:\HW2\actions-runner\_work\_tool'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Temp': 'C:\HW2\actions-runner\_work\_temp'
+[2026-04-08 10:34:14Z INFO JobRunner] Getting job extension.
+[2026-04-08 10:34:14Z INFO JobRunner] Initialize job. Getting all job steps.
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known config file 'Credentials': 'C:\HW2\actions-runner\.credentials'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known config file 'SetupInfo': 'C:\HW2\actions-runner\.setup_info'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO PipelineDirectoryManager] Loading tracking config if exists: C:\HW2\actions-runner\_work\_PipelineMapping\Dec32th/OpenSource_HW2\PipelineFolder.json
+[2026-04-08 10:34:14Z INFO PipelineDirectoryManager] Updating job run properties.
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO JobExtension] Downloading actions
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Actions': 'C:\HW2\actions-runner\_work\_actions'
+[2026-04-08 10:34:14Z INFO JobExtension] Adding .
+[2026-04-08 10:34:14Z INFO JobExtension] Adding .
+[2026-04-08 10:34:14Z INFO JobExtension] Adding .
+[2026-04-08 10:34:14Z INFO JobExtension] Adding .
+[2026-04-08 10:34:14Z INFO JobExtension] Adding .
+[2026-04-08 10:34:14Z INFO JobExtension] Adding .
+[2026-04-08 10:34:14Z INFO JobExtension] Adding .
+[2026-04-08 10:34:14Z INFO JobExtension] Adding .
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO JobExtension] Total accessible running process: 301.
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO JobExtension] Start checking server connectivity.
+[2026-04-08 10:34:14Z INFO JobExtension] Check server connectivity for https://broker.actions.githubusercontent.com/health.
+[2026-04-08 10:34:14Z INFO JobExtension] Check server connectivity for https://token.actions.githubusercontent.com/ready.
+[2026-04-08 10:34:14Z INFO JobExtension] Check server connectivity for https://run.actions.githubusercontent.com/health.
+[2026-04-08 10:34:14Z INFO JobExtension] Start checking service connectivity in background.
+[2026-04-08 10:34:14Z INFO ExecutionContext] Publish step telemetry for current step {
+  "action": "setup_job",
+  "type": "runner",
+  "stage": "Pre",
+  "stepId": "4638c8d0-304d-4f6e-9f7f-cf11dd7ebbc4",
+  "result": "succeeded",
+  "errorMessages": [],
+  "executionTimeInSeconds": 1,
+  "startTime": "2026-04-08T10:34:14.1894632Z",
+  "finishTime": "2026-04-08T10:34:14.2544568Z"
+}.
+[2026-04-08 10:34:14Z INFO JobRunner] Total job steps: 8.
+[2026-04-08 10:34:14Z INFO JobRunner] Run all job steps.
+[2026-04-08 10:34:14Z INFO StepsRunner] Processing step: DisplayName='Resolve image tag'
+[2026-04-08 10:34:14Z INFO StepsRunner] Evaluating: success()
+[2026-04-08 10:34:14Z INFO StepsRunner] Result: true
+[2026-04-08 10:34:14Z INFO StepsRunner] Starting the step.
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO StepsRunner] Which2: 'chcp'
+[2026-04-08 10:34:14Z INFO StepsRunner] Location: 'C:\Windows\System32\chcp.COM'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] Starting process:
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   File name: 'C:\Windows\System32\chcp.COM'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Arguments: '65001'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Working directory: 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Require exit code zero: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Encoding web name:  ; code page: ''
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Force kill process on cancellation: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Redirected STDIN: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Persist current code page: 'True'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Keep redirected STDIN open: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   High priority process: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] Process started with process id 19812, waiting for process exit.
+[2026-04-08 10:34:14Z INFO Worker] Listening for cancel message from the channel.
+[2026-04-08 10:34:14Z INFO Worker] Waiting for the job to complete or for a cancel message from the channel.
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] Finished process 19812 with exit code 0, and elapsed time 00:00:00.0662262.
+[2026-04-08 10:34:14Z INFO StepsRunner] Successfully returned to code page 65001 (UTF8)
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Temp': 'C:\HW2\actions-runner\_work\_temp'
+[2026-04-08 10:34:14Z INFO ExecutionContext] Write event payload to C:\HW2\actions-runner\_work\_temp\_github_workflow\event.json
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Temp': 'C:\HW2\actions-runner\_work\_temp'
+[2026-04-08 10:34:14Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IFileCommandExtension'
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.AddPathFileCommand, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SetEnvFileCommand, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.CreateStepSummaryCommand, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SaveStateFileCommand, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SetOutputFileCommand, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IActionCommandExtension'
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.InternalPluginSetRepoPathCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SetEnvCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SetOutputCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SaveStateCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.AddPathCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.AddMaskCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.AddMatcherCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.RemoveMatcherCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.WarningCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.ErrorCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.NoticeCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.DebugCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.GroupCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.EndGroupCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.EchoCommandExtension, Runner.Worker
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command internal-set-repo-path
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command set-env
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command set-output
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command save-state
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command add-path
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command add-mask
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command add-matcher
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command remove-matcher
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command warning
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command error
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command notice
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command debug
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command group
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command endgroup
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command echo
+[2026-04-08 10:34:14Z INFO ScriptHandler] Which2: 'pwsh'
+[2026-04-08 10:34:14Z INFO ScriptHandler] pwsh: command not found. Make sure 'pwsh' is installed and its location included in the 'Path' environment variable.
+[2026-04-08 10:34:14Z ERR  StepsRunner] Caught exception from step: System.IO.FileNotFoundException: pwsh: command not found
+File name: 'pwsh'
+   at GitHub.Runner.Sdk.WhichUtil.Which(String command, Boolean require, ITraceWriter trace, String prependPath)
+   at GitHub.Runner.Worker.Handlers.ScriptHandler.PrintActionDetails(ActionRunStage stage)
+   at GitHub.Runner.Worker.Handlers.Handler.PrepareExecution(ActionRunStage stage)
+   at GitHub.Runner.Worker.ActionRunner.RunAsync()
+   at GitHub.Runner.Worker.StepsRunner.RunStepAsync(IStep step, CancellationToken jobCancellationToken)
+[2026-04-08 10:34:14Z INFO StepsRunner] Step result: Failed
+[2026-04-08 10:34:14Z INFO StepsRunner] Update job result with current step result 'Failed'.
+[2026-04-08 10:34:14Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-04-08 10:34:14Z INFO StepsRunner] Processing step: DisplayName='Log in to Docker Hub'
+[2026-04-08 10:34:14Z INFO StepsRunner] Evaluating: success()
+[2026-04-08 10:34:14Z INFO StepsRunner] Result: false
+[2026-04-08 10:34:14Z INFO StepsRunner] Skipping step due to condition evaluation.
+[2026-04-08 10:34:14Z INFO StepsRunner] No need for updating job result with current step result 'Skipped'.
+[2026-04-08 10:34:14Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-04-08 10:34:14Z INFO StepsRunner] Processing step: DisplayName='Pull latest image'
+[2026-04-08 10:34:14Z INFO StepsRunner] Evaluating: success()
+[2026-04-08 10:34:14Z INFO StepsRunner] Result: false
+[2026-04-08 10:34:14Z INFO StepsRunner] Skipping step due to condition evaluation.
+[2026-04-08 10:34:14Z INFO StepsRunner] No need for updating job result with current step result 'Skipped'.
+[2026-04-08 10:34:14Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-04-08 10:34:14Z INFO StepsRunner] Processing step: DisplayName='Stop & remove existing container'
+[2026-04-08 10:34:14Z INFO StepsRunner] Evaluating: success()
+[2026-04-08 10:34:14Z INFO StepsRunner] Result: false
+[2026-04-08 10:34:14Z INFO StepsRunner] Skipping step due to condition evaluation.
+[2026-04-08 10:34:14Z INFO StepsRunner] No need for updating job result with current step result 'Skipped'.
+[2026-04-08 10:34:14Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-04-08 10:34:14Z INFO StepsRunner] Processing step: DisplayName='Start new container'
+[2026-04-08 10:34:14Z INFO StepsRunner] Evaluating: success()
+[2026-04-08 10:34:14Z INFO StepsRunner] Result: false
+[2026-04-08 10:34:14Z INFO StepsRunner] Skipping step due to condition evaluation.
+[2026-04-08 10:34:14Z INFO StepsRunner] No need for updating job result with current step result 'Skipped'.
+[2026-04-08 10:34:14Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-04-08 10:34:14Z INFO StepsRunner] Processing step: DisplayName='Health check'
+[2026-04-08 10:34:14Z INFO StepsRunner] Evaluating: success()
+[2026-04-08 10:34:14Z INFO StepsRunner] Result: false
+[2026-04-08 10:34:14Z INFO StepsRunner] Skipping step due to condition evaluation.
+[2026-04-08 10:34:14Z INFO StepsRunner] No need for updating job result with current step result 'Skipped'.
+[2026-04-08 10:34:14Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-04-08 10:34:14Z INFO StepsRunner] Processing step: DisplayName='Prune dangling images'
+[2026-04-08 10:34:14Z INFO StepsRunner] Evaluating: always()
+[2026-04-08 10:34:14Z INFO StepsRunner] Result: true
+[2026-04-08 10:34:14Z INFO StepsRunner] Starting the step.
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO StepsRunner] Which2: 'chcp'
+[2026-04-08 10:34:14Z INFO StepsRunner] Location: 'C:\Windows\System32\chcp.COM'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] Starting process:
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   File name: 'C:\Windows\System32\chcp.COM'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Arguments: '65001'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Working directory: 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Require exit code zero: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Encoding web name:  ; code page: ''
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Force kill process on cancellation: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Redirected STDIN: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Persist current code page: 'True'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Keep redirected STDIN open: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   High priority process: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] Process started with process id 25552, waiting for process exit.
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] Finished process 25552 with exit code 0, and elapsed time 00:00:00.0130150.
+[2026-04-08 10:34:14Z INFO StepsRunner] Successfully returned to code page 65001 (UTF8)
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Temp': 'C:\HW2\actions-runner\_work\_temp'
+[2026-04-08 10:34:14Z INFO ExecutionContext] Write event payload to C:\HW2\actions-runner\_work\_temp\_github_workflow\event.json
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Temp': 'C:\HW2\actions-runner\_work\_temp'
+[2026-04-08 10:34:14Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IFileCommandExtension'
+[2026-04-08 10:34:14Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IActionCommandExtension'
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command internal-set-repo-path
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command set-env
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command set-output
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command save-state
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command add-path
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command add-mask
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command add-matcher
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command remove-matcher
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command warning
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command error
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command notice
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command debug
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command group
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command endgroup
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command echo
+[2026-04-08 10:34:14Z INFO ScriptHandler] Which2: 'pwsh'
+[2026-04-08 10:34:14Z INFO ScriptHandler] pwsh: command not found. Make sure 'pwsh' is installed and its location included in the 'Path' environment variable.
+[2026-04-08 10:34:14Z ERR  StepsRunner] Caught exception from step: System.IO.FileNotFoundException: pwsh: command not found
+File name: 'pwsh'
+   at GitHub.Runner.Sdk.WhichUtil.Which(String command, Boolean require, ITraceWriter trace, String prependPath)
+   at GitHub.Runner.Worker.Handlers.ScriptHandler.PrintActionDetails(ActionRunStage stage)
+   at GitHub.Runner.Worker.Handlers.Handler.PrepareExecution(ActionRunStage stage)
+   at GitHub.Runner.Worker.ActionRunner.RunAsync()
+   at GitHub.Runner.Worker.StepsRunner.RunStepAsync(IStep step, CancellationToken jobCancellationToken)
+[2026-04-08 10:34:14Z INFO StepsRunner] Step result: Failed
+[2026-04-08 10:34:14Z INFO StepsRunner] Update job result with current step result 'Failed'.
+[2026-04-08 10:34:14Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-04-08 10:34:14Z INFO StepsRunner] Processing step: DisplayName='Log out from Docker Hub'
+[2026-04-08 10:34:14Z INFO StepsRunner] Evaluating: always()
+[2026-04-08 10:34:14Z INFO StepsRunner] Result: true
+[2026-04-08 10:34:14Z INFO StepsRunner] Starting the step.
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO StepsRunner] Which2: 'chcp'
+[2026-04-08 10:34:14Z INFO StepsRunner] Location: 'C:\Windows\System32\chcp.COM'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] Starting process:
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   File name: 'C:\Windows\System32\chcp.COM'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Arguments: '65001'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Working directory: 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Require exit code zero: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Encoding web name:  ; code page: ''
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Force kill process on cancellation: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Redirected STDIN: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Persist current code page: 'True'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   Keep redirected STDIN open: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper]   High priority process: 'False'
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] Process started with process id 23176, waiting for process exit.
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-04-08 10:34:14Z INFO ProcessInvokerWrapper] Finished process 23176 with exit code 0, and elapsed time 00:00:00.0132864.
+[2026-04-08 10:34:14Z INFO StepsRunner] Successfully returned to code page 65001 (UTF8)
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Temp': 'C:\HW2\actions-runner\_work\_temp'
+[2026-04-08 10:34:14Z INFO ExecutionContext] Write event payload to C:\HW2\actions-runner\_work\_temp\_github_workflow\event.json
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Work': 'C:\HW2\actions-runner\_work'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Temp': 'C:\HW2\actions-runner\_work\_temp'
+[2026-04-08 10:34:14Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IFileCommandExtension'
+[2026-04-08 10:34:14Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IActionCommandExtension'
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command internal-set-repo-path
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command set-env
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command set-output
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command save-state
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command add-path
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command add-mask
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command add-matcher
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command remove-matcher
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command warning
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command error
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command notice
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command debug
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command group
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command endgroup
+[2026-04-08 10:34:14Z INFO ActionCommandManager] Register action command extension for command echo
+[2026-04-08 10:34:14Z INFO ScriptHandler] Which2: 'pwsh'
+[2026-04-08 10:34:14Z INFO ScriptHandler] pwsh: command not found. Make sure 'pwsh' is installed and its location included in the 'Path' environment variable.
+[2026-04-08 10:34:14Z ERR  StepsRunner] Caught exception from step: System.IO.FileNotFoundException: pwsh: command not found
+File name: 'pwsh'
+   at GitHub.Runner.Sdk.WhichUtil.Which(String command, Boolean require, ITraceWriter trace, String prependPath)
+   at GitHub.Runner.Worker.Handlers.ScriptHandler.PrintActionDetails(ActionRunStage stage)
+   at GitHub.Runner.Worker.Handlers.Handler.PrepareExecution(ActionRunStage stage)
+   at GitHub.Runner.Worker.ActionRunner.RunAsync()
+   at GitHub.Runner.Worker.StepsRunner.RunStepAsync(IStep step, CancellationToken jobCancellationToken)
+[2026-04-08 10:34:14Z INFO StepsRunner] Step result: Failed
+[2026-04-08 10:34:14Z INFO StepsRunner] Update job result with current step result 'Failed'.
+[2026-04-08 10:34:14Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-04-08 10:34:14Z INFO JobRunner] Finalize job.
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:14Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:14Z INFO JobExtension] Initialize Env context
+[2026-04-08 10:34:14Z INFO JobExtension] Initialize steps context
+[2026-04-08 10:34:14Z INFO JobExtension] Total accessible running process: 301.
+[2026-04-08 10:34:14Z INFO JobExtension] Wait for all connectivity checks to finish.
+[2026-04-08 10:34:15Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-04-08 10:34:15Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, C:\HW2\actions-runner\_diag\blocks\ef5419d5-a430-421b-a170-d1dc255aad77_4638c8d0-304d-4f6e-9f7f-cf11dd7ebbc4.1
+[2026-04-08 10:34:15Z INFO JobServerQueue] Try to upload 4 log files or attachments, success rate: 4/4.
+[2026-04-08 10:34:15Z INFO ResultServer] Successfully started websocket client.
+[2026-04-08 10:34:15Z INFO JobServerQueue] Try to append 1 batches web console lines for record '4638c8d0-304d-4f6e-9f7f-cf11dd7ebbc4', success rate: 1/1.
+[2026-04-08 10:34:15Z INFO JobServerQueue] Try to append 1 batches web console lines for record 'e84ee811-0d70-4dcc-85c5-38302f0da749', success rate: 1/1.
+[2026-04-08 10:34:15Z INFO JobServerQueue] Try to append 1 batches web console lines for record 'cdb5fe7f-b57a-46ed-a479-d7621a750f7a', success rate: 1/1.
+[2026-04-08 10:34:15Z INFO JobExtension] Connectivity check result: GitHub.Runner.Worker.JobExtension+CheckResult
+[2026-04-08 10:34:15Z INFO JobExtension] Connectivity check result: GitHub.Runner.Worker.JobExtension+CheckResult
+[2026-04-08 10:34:15Z INFO JobExtension] Connectivity check result: GitHub.Runner.Worker.JobExtension+CheckResult
+[2026-04-08 10:34:15Z INFO ExecutionContext] Publish step telemetry for current step {
+  "action": "complete_job",
+  "type": "runner",
+  "stage": "Post",
+  "stepId": "0ac8b928-d3ff-4a36-b0c7-91050bab60a7",
+  "result": "succeeded",
+  "errorMessages": [],
+  "executionTimeInSeconds": 1,
+  "startTime": "2026-04-08T10:34:14.4360704Z",
+  "finishTime": "2026-04-08T10:34:15.2526529Z"
+}.
+[2026-04-08 10:34:15Z INFO JobRunner] Job result after all job steps finish: Failed
+[2026-04-08 10:34:15Z INFO JobRunner] Completing the job execution context.
+[2026-04-08 10:34:15Z INFO JobRunner] Shutting down the job server queue.
+[2026-04-08 10:34:15Z INFO JobServerQueue] Fire signal to shutdown all queues.
+[2026-04-08 10:34:15Z INFO JobServerQueue] Job timeline record has been updated for the first time.
+[2026-04-08 10:34:17Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-04-08 10:34:17Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, C:\HW2\actions-runner\_diag\blocks\ef5419d5-a430-421b-a170-d1dc255aad77_e84ee811-0d70-4dcc-85c5-38302f0da749.1
+[2026-04-08 10:34:18Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-04-08 10:34:18Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, C:\HW2\actions-runner\_diag\blocks\ef5419d5-a430-421b-a170-d1dc255aad77_cdb5fe7f-b57a-46ed-a479-d7621a750f7a.1
+[2026-04-08 10:34:18Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-04-08 10:34:18Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, C:\HW2\actions-runner\_diag\blocks\ef5419d5-a430-421b-a170-d1dc255aad77_f41414f5-1f04-4deb-941b-0e8a12630379.1
+[2026-04-08 10:34:19Z INFO JobServerQueue] Tried to upload 4 file(s) to results, success rate: 4/4.
+[2026-04-08 10:34:20Z INFO JobServerQueue] All queue process task stopped.
+[2026-04-08 10:34:20Z INFO JobServerQueue] Try to append 1 batches web console lines for record 'f41414f5-1f04-4deb-941b-0e8a12630379', success rate: 1/1.
+[2026-04-08 10:34:20Z INFO JobServerQueue] Try to append 1 batches web console lines for record '0ac8b928-d3ff-4a36-b0c7-91050bab60a7', success rate: 1/1.
+[2026-04-08 10:34:20Z INFO JobServerQueue] Web console line queue drained.
+[2026-04-08 10:34:20Z INFO JobServerQueue] Uploading 2 files in one shot.
+[2026-04-08 10:34:20Z INFO JobServerQueue] Try to upload 2 log files or attachments, success rate: 2/2.
+[2026-04-08 10:34:20Z INFO JobServerQueue] File upload queue drained.
+[2026-04-08 10:34:20Z INFO JobServerQueue] Starting results-based upload queue...
+[2026-04-08 10:34:20Z INFO JobServerQueue] Uploading 2 file(s) in one shot through results service.
+[2026-04-08 10:34:20Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-04-08 10:34:20Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, C:\HW2\actions-runner\_diag\blocks\ef5419d5-a430-421b-a170-d1dc255aad77_0ac8b928-d3ff-4a36-b0c7-91050bab60a7.1
+[2026-04-08 10:34:21Z INFO JobServerQueue] Got a job log file to send to results service.
+[2026-04-08 10:34:21Z INFO JobServerQueue] Starting upload of job log file to results service ResultsLog, C:\HW2\actions-runner\_diag\blocks\ef5419d5-a430-421b-a170-d1dc255aad77_82c20d62-d9d0-573d-83fb-5cb6dd3fa6f6.1
+[2026-04-08 10:34:22Z INFO JobServerQueue] Tried to upload 2 file(s) to results, success rate: 2/2.
+[2026-04-08 10:34:22Z INFO JobServerQueue] Results upload queue drained.
+[2026-04-08 10:34:22Z INFO JobServerQueue] Timeline update queue drained.
+[2026-04-08 10:34:22Z INFO JobServerQueue] Disposing job server ...
+[2026-04-08 10:34:22Z INFO JobServerQueue] Disposing results server ...
+[2026-04-08 10:34:22Z INFO JobServerQueue] All queue process tasks have been stopped, and all queues are drained.
+[2026-04-08 10:34:22Z INFO TempDirectoryManager] Cleaning runner temp folder: C:\HW2\actions-runner\_work\_temp
+[2026-04-08 10:34:22Z INFO HostContext] Well known directory 'Bin': 'C:\HW2\actions-runner\bin'
+[2026-04-08 10:34:22Z INFO HostContext] Well known directory 'Root': 'C:\HW2\actions-runner'
+[2026-04-08 10:34:22Z INFO HostContext] Well known directory 'Diag': 'C:\HW2\actions-runner\_diag'
+[2026-04-08 10:34:22Z INFO HostContext] Well known config file 'Telemetry': 'C:\HW2\actions-runner\_diag\.telemetry'
+[2026-04-08 10:34:22Z INFO JobRunner] Raising job completed against run service
+[2026-04-08 10:34:23Z INFO Worker] Job completed.

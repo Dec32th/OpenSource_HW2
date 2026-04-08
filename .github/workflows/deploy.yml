@@ -1,0 +1,169 @@
+name: CD — Deploy to Local (Self-hosted Runner)
+
+# ── 트리거 ────────────────────────────────────────────────────
+# 1) CI 워크플로우가 main/master push에서 성공적으로 완료된 직후 자동 실행
+# 2) Actions 탭에서 수동 트리거도 가능 (workflow_dispatch)
+on:
+  workflow_run:
+    workflows:
+      - "CI — Build & Push Docker Image"   # ci.yml 의 name 과 정확히 일치
+    types:
+      - completed
+    branches:
+      - main
+      - master
+
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: '배포할 이미지 태그 (기본값: latest)'
+        required: false
+        default: 'latest'
+
+# ── 공통 환경 변수 ────────────────────────────────────────────
+env:
+  IMAGE_NAME:      covid-variant-tracker
+  CONTAINER_NAME:  covid-variant-tracker   # 로컬에서 사용할 컨테이너 이름
+  HOST_PORT:       8000                    # 호스트 노출 포트
+  CONTAINER_PORT:  8000                    # 컨테이너 내부 포트
+
+jobs:
+  # ── CI 성공 여부 필터 (workflow_run 이벤트 전용) ──────────────
+  check-ci-result:
+    name: Check CI result
+    runs-on: ubuntu-latest
+    # workflow_dispatch 로 수동 실행할 때는 이 job 을 skip
+    if: github.event_name == 'workflow_run'
+    steps:
+      - name: Abort if CI failed
+        if: github.event.workflow_run.conclusion != 'success'
+        run: |
+          echo "⛔ CI workflow 가 성공하지 못했습니다 (conclusion=${{ github.event.workflow_run.conclusion }})."
+          echo "배포를 중단합니다."
+          exit 1
+
+  # ── 배포 job ─────────────────────────────────────────────────
+  deploy:
+    name: Pull & Run on Local Machine
+    # self-hosted 로 등록한 러너에서 실행
+    runs-on: self-hosted
+
+    # workflow_run 트리거일 때: CI 성공 확인 후 실행
+    # workflow_dispatch 트리거일 때: 바로 실행
+    needs: []
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+
+    steps:
+      # ── 1. 배포 대상 이미지 태그 결정 ────────────────────────
+      - name: Resolve image tag
+        id: tag
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.image_tag }}"
+          else
+            # workflow_run 이벤트: 트리거한 브랜치/태그 기반
+            REF="${{ github.event.workflow_run.head_branch }}"
+            if [[ "$REF" == "main" || "$REF" == "master" ]]; then
+              TAG="latest"
+            else
+              TAG="$REF"
+            fi
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "image=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:$TAG" >> "$GITHUB_OUTPUT"
+          echo "▶ 배포 이미지: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:$TAG"
+
+      # ── 2. Docker Hub 로그인 ──────────────────────────────────
+      # (private repo 가 아닌 경우 생략 가능하지만, rate-limit 방지용으로 유지)
+      - name: Log in to Docker Hub
+        shell: bash
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | \
+            docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          echo "✅ Docker Hub 로그인 완료"
+
+      # ── 3. 최신 이미지 Pull ───────────────────────────────────
+      - name: Pull latest image
+        shell: bash
+        run: |
+          IMAGE="${{ steps.tag.outputs.image }}"
+          echo "⬇ Pulling $IMAGE ..."
+          docker pull "$IMAGE"
+          echo "✅ Pull 완료"
+
+      # ── 4. 기존 컨테이너 중지 & 제거 ─────────────────────────
+      # 컨테이너가 없을 때도 오류 없이 진행 (|| true)
+      - name: Stop & remove existing container
+        shell: bash
+        run: |
+          NAME="${{ env.CONTAINER_NAME }}"
+          if docker ps -a --format '{{.Names}}' | grep -q "^${NAME}$"; then
+            echo "⏹ 기존 컨테이너 중지 중: $NAME"
+            docker stop "$NAME" || true
+            docker rm   "$NAME" || true
+            echo "✅ 기존 컨테이너 제거 완료"
+          else
+            echo "ℹ 실행 중인 컨테이너 없음 — 신규 배포로 진행"
+          fi
+
+      # ── 5. 새 컨테이너 실행 ───────────────────────────────────
+      - name: Start new container
+        shell: bash
+        run: |
+          IMAGE="${{ steps.tag.outputs.image }}"
+          NAME="${{ env.CONTAINER_NAME }}"
+
+          docker run -d \
+            --name  "$NAME" \
+            --restart unless-stopped \
+            -p "${{ env.HOST_PORT }}:${{ env.CONTAINER_PORT }}" \
+            --label "deployed-by=github-actions" \
+            --label "commit=${{ github.sha }}" \
+            "$IMAGE"
+
+          echo "✅ 새 컨테이너 시작 완료"
+          echo "🌐 서비스 주소: http://localhost:${{ env.HOST_PORT }}"
+
+      # ── 6. 헬스체크 — 컨테이너가 실제로 응답하는지 확인 ────────
+      - name: Health check
+        shell: bash
+        run: |
+          echo "⏳ 헬스체크 대기 (최대 30초)..."
+          for i in $(seq 1 10); do
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' \
+                       "${{ env.CONTAINER_NAME }}" 2>/dev/null || echo "unknown")
+            HTTP=$(curl -s -o /dev/null -w "%{http_code}" \
+                     http://localhost:${{ env.HOST_PORT }}/health 2>/dev/null || echo "000")
+
+            echo "  시도 $i/10 | Health=$STATUS | HTTP=$HTTP"
+
+            if [ "$HTTP" = "200" ]; then
+              echo "✅ 서비스 정상 응답 (HTTP 200)"
+              break
+            fi
+
+            if [ "$i" = "10" ]; then
+              echo "❌ 헬스체크 실패 — 컨테이너 로그:"
+              docker logs "${{ env.CONTAINER_NAME }}" --tail 40
+              exit 1
+            fi
+
+            sleep 3
+          done
+
+      # ── 7. 사용하지 않는 이미지 정리 (선택) ──────────────────
+      - name: Prune dangling images
+        if: always()
+        shell: bash
+        run: |
+          docker image prune -f
+          echo "🧹 사용하지 않는 이미지 정리 완료"
+
+      # ── 8. Docker Hub 로그아웃 ────────────────────────────────
+      - name: Log out from Docker Hub
+        if: always()
+        shell: bash
+        run: docker logout

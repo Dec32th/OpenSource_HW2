@@ -11,6 +11,12 @@ on:
     branches:
       - main
       - master            # PR은 build만, push 안 함
+  # deploy.yml 이 직접 호출할 수 있도록 허용
+  workflow_call:
+    outputs:
+      image-tag:
+        description: "푸시된 Docker 이미지 전체 태그"
+        value: ${{ jobs.build-and-push.outputs.image-tag }}
 
 env:
   IMAGE_NAME: covid-variant-tracker   # Docker Hub 리포지토리 이름
@@ -21,6 +27,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+
+    # deploy.yml 이 참조할 output
+    outputs:
+      image-tag: ${{ steps.meta.outputs.version }}
 
     steps:
       # 1. 소스 체크아웃

@@ -42,7 +42,7 @@ jobs:
 
   deploy:
     name: Pull & Run on Local Machine
-    # Windows self-hosted 환경
+    # Mac self-hosted 환경 (macOS 기본 셸인 bash 사용)
     runs-on: self-hosted
 
     needs: []
@@ -53,106 +53,104 @@ jobs:
     steps:
       - name: Resolve image tag
         id: tag
-        shell: powershell
+        shell: bash
         run: |
-          $eventName = "${{ github.event_name }}"
-          if ($eventName -eq "workflow_dispatch") {
-            $TAG = "${{ github.event.inputs.image_tag }}"
-          } else {
-            $REF = "${{ github.event.workflow_run.head_branch }}"
-            if ($REF -eq "main" -or $REF -eq "master") {
-              $TAG = "latest"
-            } else {
-              $TAG = $REF
-            }
-          }
-          $IMAGE = "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:$TAG"
-          echo "tag=$TAG" >> $env:GITHUB_OUTPUT
-          echo "image=$IMAGE" >> $env:GITHUB_OUTPUT
-          Write-Host "▶ 배포 이미지: $IMAGE"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.image_tag }}"
+          else
+            REF="${{ github.event.workflow_run.head_branch }}"
+            if [ "$REF" = "main" ] || [ "$REF" = "master" ]; then
+              TAG="latest"
+            else
+              TAG="$REF"
+            fi
+          fi
+          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:$TAG"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "image=$IMAGE" >> $GITHUB_OUTPUT
+          echo "▶ 배포 이미지: $IMAGE"
 
       - name: Log in to Docker Hub
-        shell: powershell
+        shell: bash
         run: |
-          "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-          Write-Host "✅ Docker Hub 로그인 완료"
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          echo "✅ Docker Hub 로그인 완료"
 
       - name: Pull latest image
-        shell: powershell
+        shell: bash
         run: |
-          $IMAGE = "${{ steps.tag.outputs.image }}"
-          Write-Host "⬇ Pulling $IMAGE ..."
+          IMAGE="${{ steps.tag.outputs.image }}"
+          echo "⬇ Pulling $IMAGE ..."
           docker pull $IMAGE
-          Write-Host "✅ Pull 완료"
+          echo "✅ Pull 완료"
 
       - name: Stop & remove existing container
-        shell: powershell
+        shell: bash
         run: |
-          $NAME = "${{ env.CONTAINER_NAME }}"
-          $exists = docker ps -a --format '{{.Names}}' | Select-String -Pattern "^$NAME$"
-          if ($exists) {
-            Write-Host "⏹ 기존 컨테이너 중지 및 제거: $NAME"
-            docker stop $NAME | Out-Null
-            docker rm $NAME | Out-Null
-            Write-Host "✅ 기존 컨테이너 제거 완료"
-          } else {
-            Write-Host "ℹ 실행 중인 컨테이너 없음 — 신규 배포로 진행"
-          }
+          NAME="${{ env.CONTAINER_NAME }}"
+          if docker ps -a --format '{{.Names}}' | grep -q "^$NAME$"; then
+            echo "⏹ 기존 컨테이너 중지 및 제거: $NAME"
+            docker stop $NAME > /dev/null || true
+            docker rm $NAME > /dev/null || true
+            echo "✅ 기존 컨테이너 제거 완료"
+          else
+            echo "ℹ 실행 중인 컨테이너 없음 — 신규 배포로 진행"
+          fi
 
       - name: Start new container
-        shell: powershell
+        shell: bash
         run: |
-          $IMAGE = "${{ steps.tag.outputs.image }}"
-          $NAME = "${{ env.CONTAINER_NAME }}"
+          IMAGE="${{ steps.tag.outputs.image }}"
+          NAME="${{ env.CONTAINER_NAME }}"
 
-          docker run -d `
-            --name $NAME `
-            --restart unless-stopped `
-            -p "${{ env.HOST_PORT }}:${{ env.CONTAINER_PORT }}" `
-            --label "deployed-by=github-actions" `
-            --label "commit=${{ github.sha }}" `
+          docker run -d \
+            --name $NAME \
+            --restart unless-stopped \
+            -p "${{ env.HOST_PORT }}:${{ env.CONTAINER_PORT }}" \
+            --label "deployed-by=github-actions" \
+            --label "commit=${{ github.sha }}" \
             $IMAGE
 
-          Write-Host "✅ 새 컨테이너 시작 완료"
-          Write-Host "🌐 서비스 주소: http://localhost:${{ env.HOST_PORT }}"
+          echo "✅ 새 컨테이너 시작 완료"
+          echo "🌐 서비스 주소: http://localhost:${{ env.HOST_PORT }}"
 
       - name: Health check
-        shell: powershell
+        shell: bash
         run: |
-          Write-Host "⏳ 헬스체크 대기 (최대 30초)..."
-          $success = $false
-          for ($i = 1; $i -le 10; $i++) {
-            $STATUS = try { docker inspect --format='{{.State.Health.Status}}' "${{ env.CONTAINER_NAME }}" 2>$null } catch { "unknown" }
-            if ([string]::IsNullOrWhiteSpace($STATUS)) { $STATUS = "unknown" }
+          echo "⏳ 헬스체크 대기 (최대 30초)..."
+          success=false
+          for i in {1..10}; do
+            STATUS=$(docker inspect --format='{{.State.Health.Status}}' "${{ env.CONTAINER_NAME }}" 2>/dev/null || echo "unknown")
+            if [ -z "$STATUS" ]; then STATUS="unknown"; fi
             
-            $HTTP = try { (Invoke-WebRequest -Uri "http://localhost:${{ env.HOST_PORT }}/health" -UseBasicParsing -ErrorAction Stop).StatusCode } catch { "000" }
+            HTTP=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:${{ env.HOST_PORT }}/health" || echo "000")
 
-            Write-Host "  시도 $i/10 | Health=$STATUS | HTTP=$HTTP"
+            echo "  시도 $i/10 | Health=$STATUS | HTTP=$HTTP"
 
-            if ($HTTP -eq 200) {
-              Write-Host "✅ 서비스 정상 응답 (HTTP 200)"
-              $success = $true
+            if [ "$HTTP" = "200" ]; then
+              echo "✅ 서비스 정상 응답 (HTTP 200)"
+              success=true
               break
-            }
+            fi
 
-            if ($i -eq 10) {
-              Write-Host "❌ 헬스체크 실패 — 컨테이너 로그:"
+            if [ "$i" -eq 10 ]; then
+              echo "❌ 헬스체크 실패 — 컨테이너 로그:"
               docker logs "${{ env.CONTAINER_NAME }}" --tail 40
               exit 1
-            }
+            fi
 
-            Start-Sleep -Seconds 3
-          }
-          if (-not $success) { exit 1 }
+            sleep 3
+          done
+          if [ "$success" = "false" ]; then exit 1; fi
 
       - name: Prune dangling images
         if: always()
-        shell: powershell
+        shell: bash
         run: |
           docker image prune -f
-          Write-Host "🧹 사용하지 않는 이미지 정리 완료"
+          echo "🧹 사용하지 않는 이미지 정리 완료"
 
       - name: Log out from Docker Hub
         if: always()
-        shell: powershell
+        shell: bash
         run: docker logout

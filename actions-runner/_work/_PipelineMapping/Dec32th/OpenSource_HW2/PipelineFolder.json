@@ -1,0 +1,12 @@
+﻿{
+  "repositoryName": "Dec32th/OpenSource_HW2",
+  "pipelineDirectory": "OpenSource_HW2",
+  "workspaceDirectory": "OpenSource_HW2\\OpenSource_HW2",
+  "repositories": {
+    "Dec32th/OpenSource_HW2": {
+      "repositoryPath": "OpenSource_HW2\\OpenSource_HW2",
+      "lastRunOn": "04/08/2026 19:27:49 +09:00"
+    }
+  },
+  "lastRunOn": "04/08/2026 19:27:49 +09:00"
+}

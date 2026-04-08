@@ -75,116 +75,24 @@ def build_tree(variants: list[dict]) -> list[dict]:
 
 
 # ──────────────────────────────────────────────
-# HTML Tree Generator (Python-side)
-# ──────────────────────────────────────────────
-def _tx_class(tx: float) -> str:
-    if tx >= 90:
-        return "tx-critical"
-    elif tx >= 70:
-        return "tx-high"
-    elif tx >= 50:
-        return "tx-mid"
-    return "tx-low"
-
-
-def _render_card(node: dict) -> str:
-    """단일 변이 카드 HTML 문자열을 반환한다."""
-    is_korea = node["is_korea"]
-    tx = node["transmissibility"]
-    tc = _tx_class(tx)
-    extra_class = " mugunghwa-card" if is_korea else ""
-
-    who_ribbon = '<div class="who-ribbon">WHO VOC</div>' if node["who_label"] else ""
-    mug_icon = '<div class="mug-icon" title="한국 발생 확인">🌸</div>' if is_korea else ""
-    korea_badge = '<div class="korea-badge">🇰🇷 국내 발생 확인</div>' if is_korea else ""
-
-    desc = html.escape(node["description"])
-    name = html.escape(node["name"])
-    antibody = html.escape(node["antibody_characteristics"])
-    clade = html.escape(node["clade"])
-    first_det = html.escape(node["first_detected"])
-    node_id = html.escape(node["id"])
-    fat_bar = node["fatality_bar"]
-    fat_rate = node["fatality_rate"]
-
-    return f"""<div class="variant-card{extra_class}" id="card-{node_id}" role="article" aria-label="{name}">
-  {who_ribbon}
-  <div class="card-header">
-    <div class="card-name">{name}</div>
-    {mug_icon}
-  </div>
-  <div class="clade-badge">Clade {clade}</div>
-  <p class="card-desc">{desc}</p>
-  <div class="metrics">
-    <div class="metric-row">
-      <span class="metric-label {tc}">전파성</span>
-      <div class="metric-bar-wrap"><div class="metric-bar bar-tx" style="width:{tx}%"></div></div>
-      <span class="metric-val {tc}">{tx}</span>
-    </div>
-    <div class="metric-row">
-      <span class="metric-label">치사율</span>
-      <div class="metric-bar-wrap"><div class="metric-bar bar-fat" style="width:{fat_bar}%"></div></div>
-      <span class="metric-val">{fat_rate}%</span>
-    </div>
-  </div>
-  <div class="first-detected">📅 {first_det}</div>
-  {korea_badge}
-  <div class="antibody-row">
-    <span class="antibody-trigger">🧬 항체 특성 보기</span>
-    <div class="antibody-tooltip">{antibody}</div>
-  </div>
-</div>"""
-
-
-def _stem_class(node: dict) -> str:
-    return "connector-down mug-stem" if node["is_korea"] else "connector-down"
-
-
-def _render_subtree(node: dict) -> str:
-    """변이 노드와 하위 계통을 재귀적으로 HTML로 변환한다."""
-    parts = ['<div class="branch">']
-    parts.append(_render_card(node))
-
-    children = node.get("children", [])
-    if children:
-        stem = _stem_class(node)
-        parts.append(f'<div class="{stem}"></div>')
-        parts.append('<div class="children-row">')
-        for child in children:
-            c_stem = _stem_class(child)
-            parts.append('<div class="child-slot">')
-            parts.append(f'<div class="{c_stem}"></div>')
-            parts.append(_render_subtree(child))
-            parts.append('</div>')
-        parts.append('</div>')
-
-    parts.append('</div>')
-    return "\n".join(parts)
-
-
-def render_forest(tree: list[dict]) -> str:
-    """전체 트리를 HTML 문자열로 반환한다."""
-    inner = "\n".join(_render_subtree(root) for root in tree)
-    return f'<div class="forest">{inner}</div>'
-
-
-# ──────────────────────────────────────────────
 # API Endpoints
 # ──────────────────────────────────────────────
 @app.get("/", response_class=HTMLResponse, summary="메인 시각화 페이지")
 async def index(request: Request):
-    """Jinja2 템플릿으로 렌더링된 변이 트리 페이지를 반환한다."""
+    """Jinja2 템플릿으로 렌더링된 메인 페이지를 반환한다. (D3.js 프론트엔드 연결)"""
     variants = load_variants()
-    tree = build_tree(variants)
 
     total = len(variants)
     korea_count = sum(1 for v in variants if v["is_korea"])
-    max_variant = max(variants, key=lambda v: v["transmissibility"])
-    min_fatality = min(variants, key=lambda v: v["fatality_rate"])
+    if total > 0:
+        max_variant = max(variants, key=lambda v: v["transmissibility"])
+        min_fatality = min(variants, key=lambda v: v["fatality_rate"])
+    else:
+        max_variant = {"name": "-", "transmissibility": 0}
+        min_fatality = {"name": "-", "fatality_rate": 0}
 
     content = render_template(
         "index.html",
-        tree_html=Markup(render_forest(tree)),
         stats={
             "total": total,
             "korea_count": korea_count,

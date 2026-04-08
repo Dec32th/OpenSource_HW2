@@ -11,7 +11,9 @@
       "antibody_characteristics": "원형 스파이크 단백질 기준. 초기 백신의 항원 표적.",
       "clade": "A",
       "who_label": null,
-      "first_detected": "2019-12"
+      "first_detected": "2019-12",
+      "vaccine_impact_score": 9,
+      "korea_share": 0
     },
     {
       "id": "alpha",
@@ -24,7 +26,9 @@
       "antibody_characteristics": "N501Y로 수용체 결합력 강화. 기존 백신 효력 일부 유지.",
       "clade": "B",
       "who_label": "Alpha",
-      "first_detected": "2020-09"
+      "first_detected": "2020-09",
+      "vaccine_impact_score": 8,
+      "korea_share": 5
     },
     {
       "id": "beta",
@@ -37,7 +41,9 @@
       "antibody_characteristics": "E484K로 중화항체 회피 능력 보유. 일부 백신 효력 감소.",
       "clade": "B",
       "who_label": "Beta",
-      "first_detected": "2020-05"
+      "first_detected": "2020-05",
+      "vaccine_impact_score": 7,
+      "korea_share": 2
     },
     {
       "id": "gamma",
@@ -50,7 +56,9 @@
       "antibody_characteristics": "복합 변이로 항체 회피 증가. 재감염 사례 보고.",
       "clade": "B",
       "who_label": "Gamma",
-      "first_detected": "2020-11"
+      "first_detected": "2020-11",
+      "vaccine_impact_score": 7,
+      "korea_share": 0
     },
     {
       "id": "delta",
@@ -63,7 +71,9 @@
       "antibody_characteristics": "L452R, T478K 변이. mRNA 백신 돌파 감염 빈번.",
       "clade": "G",
       "who_label": "Delta",
-      "first_detected": "2020-10"
+      "first_detected": "2020-10",
+      "vaccine_impact_score": 6,
+      "korea_share": 40
     },
     {
       "id": "delta_plus",
@@ -76,7 +86,9 @@
       "antibody_characteristics": "K417N 추가로 단클론 항체 칵테일 효력 감소.",
       "clade": "G",
       "who_label": null,
-      "first_detected": "2021-06"
+      "first_detected": "2021-06",
+      "vaccine_impact_score": 6,
+      "korea_share": 1
     },
     {
       "id": "omicron",
@@ -89,7 +101,9 @@
       "antibody_characteristics": "대규모 항체 회피. 기존 중화항체 효력 크게 감소. 부스터 접종 필수.",
       "clade": "GRA",
       "who_label": "Omicron",
-      "first_detected": "2021-11"
+      "first_detected": "2021-11",
+      "vaccine_impact_score": 4,
+      "korea_share": 80
     },
     {
       "id": "ba2",
@@ -102,7 +116,9 @@
       "antibody_characteristics": "BA.1과 다른 항원 구조. 기존 감염 후 재감염 가능.",
       "clade": "GRA",
       "who_label": null,
-      "first_detected": "2021-12"
+      "first_detected": "2021-12",
+      "vaccine_impact_score": 4,
+      "korea_share": 90
     },
     {
       "id": "ba5",
@@ -115,7 +131,9 @@
       "antibody_characteristics": "L452R 재등장. BA.2 감염자에도 재감염 유발.",
       "clade": "GRA",
       "who_label": null,
-      "first_detected": "2022-02"
+      "first_detected": "2022-02",
+      "vaccine_impact_score": 4,
+      "korea_share": 60
     },
     {
       "id": "xbb",
@@ -128,7 +146,9 @@
       "antibody_characteristics": "F486P 변이로 ACE2 친화력 극대화. 2가 백신 효력 약화.",
       "clade": "GRY",
       "who_label": null,
-      "first_detected": "2022-10"
+      "first_detected": "2022-10",
+      "vaccine_impact_score": 3,
+      "korea_share": 50
     },
     {
       "id": "eg5",
@@ -141,7 +161,9 @@
       "antibody_characteristics": "F456L 변이 보유. XBB 업데이트 백신 부분 효력.",
       "clade": "GRY",
       "who_label": "EG.5",
-      "first_detected": "2023-02"
+      "first_detected": "2023-02",
+      "vaccine_impact_score": 3,
+      "korea_share": 20
     },
     {
       "id": "jn1",
@@ -154,7 +176,9 @@
       "antibody_characteristics": "L455S 변이로 항체 결합 회피. 기존 면역 돌파 능력 최고 수준.",
       "clade": "GRA",
       "who_label": "JN.1",
-      "first_detected": "2023-08"
+      "first_detected": "2023-08",
+      "vaccine_impact_score": 3,
+      "korea_share": 80
     },
     {
       "id": "kp2",
@@ -167,7 +191,9 @@
       "antibody_characteristics": "R346T, F456L 변이 추가. JN.1 대응 항체도 부분 회피.",
       "clade": "GRA",
       "who_label": null,
-      "first_detected": "2024-02"
+      "first_detected": "2024-02",
+      "vaccine_impact_score": 2,
+      "korea_share": 60
     },
     {
       "id": "xec",
@@ -175,12 +201,59 @@
       "parent_id": "kp2",
       "description": "KS.1.1과 KP.3.3의 재조합 계통. 2024년 하반기 유럽·한국 확산.",
       "transmissibility_raw": 97,
-      "fatality_rate": 0.10,
+      "fatality_rate": 0.1,
       "is_korea": true,
       "antibody_characteristics": "복수 변이 재조합으로 항체 회피 폭 넓음. JN.1 기반 백신 효력 제한.",
       "clade": "GRA",
       "who_label": null,
-      "first_detected": "2024-07"
+      "first_detected": "2024-07",
+      "vaccine_impact_score": 2,
+      "korea_share": 30
+    },
+    {
+      "id": "kp3_1",
+      "name": "KP.3.1",
+      "parent_id": "kp2",
+      "description": "업데이트된 백신의 위중증 예방 효과 유지됨",
+      "transmissibility_raw": 98,
+      "fatality_rate": 0.12,
+      "is_korea": true,
+      "antibody_characteristics": "FLiRT 파생",
+      "clade": "GRA",
+      "who_label": null,
+      "first_detected": "2024",
+      "vaccine_impact_score": 7,
+      "korea_share": 15
+    },
+    {
+      "id": "nb1_8_1",
+      "name": "NB.1.8.1",
+      "parent_id": "jn1",
+      "description": "높은 면역 회피력으로 인한 상대적 지수 하락 반영",
+      "transmissibility_raw": 98,
+      "fatality_rate": 0.15,
+      "is_korea": true,
+      "antibody_characteristics": "강력한 면역 회피력",
+      "clade": "GRA",
+      "who_label": null,
+      "first_detected": "2025",
+      "vaccine_impact_score": 6,
+      "korea_share": 1
+    },
+    {
+      "id": "xdv_1",
+      "name": "XDV.1",
+      "parent_id": "jn1",
+      "description": "JN.1 파생 변이 특성 반영",
+      "transmissibility_raw": 99,
+      "fatality_rate": 0.15,
+      "is_korea": true,
+      "antibody_characteristics": "JN.1 특성 계승",
+      "clade": "GRA",
+      "who_label": null,
+      "first_detected": "2025",
+      "vaccine_impact_score": 6,
+      "korea_share": 5
     }
   ]
 }
